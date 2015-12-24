@@ -48,7 +48,7 @@ public class MyXmlTreeBuilder extends XmlTreeBuilder {
             case Doctype:
                 insert(token.asDoctype());
                 break;
-            case EOF: // could put some normalisation here if desired
+            case EOF: // could put some normalization here if desired
                 break;
             default:
                 Validate.fail("Unexpected token type: " + token.type);
@@ -69,7 +69,11 @@ public class MyXmlTreeBuilder extends XmlTreeBuilder {
     }
 
     Element insert(StartTag startTag) {
+    	
         // remove prefix
+    	if(startTag.name().replace(this.prefix,"").isEmpty())
+    		startTag.tagName = startTag.tagName + "empty";
+    	
         Tag tag = Tag.valueOf(startTag.name().replace(this.prefix,""));
         Element el = new Element(tag, this.baseUri, startTag.attributes);
         this.insertNode(el);
