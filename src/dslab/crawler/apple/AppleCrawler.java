@@ -39,7 +39,7 @@ public class AppleCrawler {
 	 * @param date 日期
 	 * @throws IOException
 	 */
-	private static void saveNewsListText(List<String[]> newsList, String date) throws IOException{
+	private static void saveNewsListText(String date) throws IOException{
 		String[] newscontent = null;
 		String dirPath = null;
 		String filePath = null;
@@ -49,11 +49,11 @@ public class AppleCrawler {
 		File f = null;
 		OutputStream out = null;
 		
-		for (int i = 0; i < newsList.size(); i++) {
+		for (int i = 0; i < newsTagLinkList.size(); i++) {
 
 			//建路徑資料夾(時間/新聞分類)
-			tag = newsList.get(i)[0];
-			url = newsList.get(i)[1].toString();
+			tag = newsTagLinkList.get(i)[0];
+			url = newsTagLinkList.get(i)[1].toString();
 			System.out.println(tag);	
 			System.out.println(url);
 			
@@ -115,12 +115,14 @@ public class AppleCrawler {
 	}
 
 	public static void main(String[] args) throws IOException {
+		String url = null;
+		String newsTag = null;
+		Document newsLinks;
 		
-		for (Integer date = 20040101; date < 20150000; date += 10000){
-			String url = "http://www.appledaily.com.tw/appledaily/archive/" + date;
-			String newsTag = null;
+		for (Integer date = 20151224; date < 20151226; date += 1){
+			url = "http://www.appledaily.com.tw/appledaily/archive/" + date;
 
-			Document newsLinks = CrawlerPack.getFromHtml(url);
+			newsLinks = CrawlerPack.getFromHtml(url);
 
 			for (Element elem : newsLinks.select("h2.nust.clearmen")) {
 				newsTag = elem.text();
@@ -133,7 +135,7 @@ public class AppleCrawler {
 			}
 
 			// 儲存新聞內容
-			saveNewsListText(newsTagLinkList, date.toString());
+			saveNewsListText(date.toString());
 		}
 	}
 }
