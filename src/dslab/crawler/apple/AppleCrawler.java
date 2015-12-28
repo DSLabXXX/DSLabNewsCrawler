@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.jsoup.nodes.Document;
@@ -13,8 +17,11 @@ import org.jsoup.nodes.Element;
 import dslab.crawler.pack.CrawlerPack;
 
 public class AppleCrawler {
-	static List<String> newsLinkList = new ArrayList<String>();
-	static List<String[]> newsTagLinkList = new ArrayList<String[]>();
+	
+	private final static Date todayDate = Calendar.getInstance().getTime();
+	private final static DateFormat dateFormate = new SimpleDateFormat("yyyyMMdd");
+	private static List<String> newsLinkList = new ArrayList<String>();
+	private static List<String[]> newsTagLinkList = new ArrayList<String[]>();
 	
 	/**
 	 * 加入新聞連結串列
@@ -63,26 +70,29 @@ public class AppleCrawler {
 			
 			Document contain = CrawlerPack.getFromXml(url);
 			
-			for (Element elem : contain.select("article#maincontent.vertebrae")) {
-				//截取新聞標題、內容
-				if(!tag.equals("地產焦點"))
-					newscontent = commentNewsParseProcess(elem);
-				else
-					newscontent = houseNewsParseProcess(elem);
-				
-				//建檔案名稱(時間+新聞標題)
-				filePath = date + newscontent[0] + ".txt";
-				f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>|]", "-"));
-				out = new FileOutputStream(f.getAbsolutePath());
-				
-				//寫入內容至檔案
-				out.write(newscontent[0].getBytes());
-				out.write("\n".getBytes());
-				out.write(newscontent[1].getBytes());
-				out.write("\n".getBytes());
-				out.write(newscontent[2].getBytes());
-				out.close();
-			}
+			if (contain.hasText()) {
+				for (Element elem : contain.select("article#maincontent.vertebrae")) {
+					// 截取新聞標題、內容
+					if (!tag.equals("地產焦點"))
+						newscontent = commentNewsParseProcess(elem);
+					else
+						newscontent = houseNewsParseProcess(elem);
+
+					// 建檔案名稱(時間+新聞標題)
+					filePath = date + newscontent[0] + ".txt";
+					f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>|]", "-"));
+					out = new FileOutputStream(f.getAbsolutePath());
+
+					// 寫入內容至檔案
+					out.write(newscontent[0].getBytes());
+					out.write("\n".getBytes());
+					out.write(newscontent[1].getBytes());
+					out.write("\n".getBytes());
+					out.write(newscontent[2].getBytes());
+					out.close();
+				}
+			} else
+				System.err.print("轉換失敗");
 		}
 	}
 	
@@ -114,14 +124,27 @@ public class AppleCrawler {
 		return paresResult;
 	}
 
+	@SuppressWarnings("static-access")
 	public static void main(String[] args) throws IOException {
+		String today = dateFormate.format(todayDate).toString();
+		String pastdayOfYear = "2014";
+		String pastdayOfMonth = "12";
+		String pastdayOfdate = "31";
+		String pastday = pastdayOfYear + pastdayOfMonth + pastdayOfdate;		
 		String url = null;
 		String newsTag = null;
 		Document newsLinks;
 		
-		for (Integer date = 20151224; date < 20151226; date += 1){
-			url = "http://www.appledaily.com.tw/appledaily/archive/" + date;
-
+	    Calendar C = Calendar.getInstance();
+	    C.set(Integer.parseInt(pastdayOfYear),Integer.parseInt(pastdayOfMonth)-1,Integer.parseInt(pastdayOfdate));
+		
+	    while(Integer.parseInt(pastday) < Integer.parseInt(today)){
+	    	pastdayOfYear = String.format("%04d", C.get(Calendar.YEAR));
+	    	pastdayOfMonth = String.format("%02d", C.get(Calendar.MONTH) + 1);
+	    	pastdayOfdate = String.format("%02d", C.get(Calendar.DAY_OF_MONTH));
+	    	pastday = pastdayOfYear + pastdayOfMonth + pastdayOfdate;	
+	    	
+			url = "http://www.appledaily.com.tw/appledaily/archive/" + pastday;
 			newsLinks = CrawlerPack.getFromHtml(url);
 
 			for (Element elem : newsLinks.select("h2.nust.clearmen")) {
@@ -135,7 +158,10 @@ public class AppleCrawler {
 			}
 
 			// 儲存新聞內容
-			saveNewsListText(date.toString());
-		}
+			saveNewsListText(pastday);
+
+			C.add(C.DATE, Integer.parseInt("1"));
+	    }
+		
 	}
 }
