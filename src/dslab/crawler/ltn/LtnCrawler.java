@@ -46,8 +46,8 @@ public class LtnCrawler {
 	 * @param date
 	 * @throws IOException
 	 */
-	private static void processNewsList(String date) throws IOException{
-
+	private static void processNewsList(String year, String date) throws IOException{
+		
 		String dirPath = null;
 		String tag = null;
 		String url = null;
@@ -61,7 +61,7 @@ public class LtnCrawler {
 			System.out.println(tag);	
 			System.out.println(url);
 			
-			dirPath = "./自由時報" + date + "/" + tag;
+			dirPath = "./自由時報" + year + "/"+ date + "/" + tag;
 			dir = new File(dirPath);
 			dir.mkdirs();			
 			
@@ -266,7 +266,7 @@ public class LtnCrawler {
 				}
 			}
 	    	// 儲存新聞內容
-	    	processNewsList(pastday);
+	    	processNewsList(pastdayOfYear, pastday);
 	    	
 	    	C.add(C.DATE, Integer.parseInt("1"));
 	    }
