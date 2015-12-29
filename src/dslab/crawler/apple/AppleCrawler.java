@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,8 +19,8 @@ public class AppleCrawler {
 	
 	private final static Date todayDate = Calendar.getInstance().getTime();
 	private final static DateFormat dateFormate = new SimpleDateFormat("yyyyMMdd");
-	private static List<String> newsLinkList = new ArrayList<String>();
-	private static List<String[]> newsTagLinkList = new ArrayList<String[]>();
+	private static ArrayList<String> newsLinkList = new ArrayList<String>();
+	private static ArrayList<String[]> newsTagLinkList = new ArrayList<String[]>();
 	
 	/**
 	 * 加入新聞連結串列
@@ -40,21 +39,16 @@ public class AppleCrawler {
 	}
 	
 	/**
-	 * 儲存新聞內容至txt檔，路徑：./日期/分類/日期+新聞名稱.txt
+	 * 處理新聞連結清單
 	 * 
-	 * @param newsList 新聞連結列表
-	 * @param date 日期
+	 * @param date
 	 * @throws IOException
 	 */
-	private static void saveNewsListText(String date) throws IOException{
-		String[] newscontent = null;
+	private static void processNewsList(String date) throws IOException{
 		String dirPath = null;
-		String filePath = null;
 		String tag = null;
 		String url = null;
 		File dir;
-		File f = null;
-		OutputStream out = null;
 		
 		for (int i = 0; i < newsTagLinkList.size(); i++) {
 
@@ -70,66 +64,117 @@ public class AppleCrawler {
 			
 			Document contain = CrawlerPack.getFromXml(url);
 			
-			if (contain.hasText()) {
-				for (Element elem : contain.select("article#maincontent.vertebrae")) {
-					// 截取新聞標題、內容
-					if (!tag.equals("地產焦點"))
-						newscontent = commentNewsParseProcess(elem);
-					else
-						newscontent = houseNewsParseProcess(elem);
-
-					// 建檔案名稱(時間+新聞標題)
-					filePath = date + newscontent[0] + ".txt";
-					f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>|]", "-"));
-					out = new FileOutputStream(f.getAbsolutePath());
-
-					// 寫入內容至檔案
-					out.write(newscontent[0].getBytes());
-					out.write("\n".getBytes());
-					out.write(newscontent[1].getBytes());
-					out.write("\n".getBytes());
-					out.write(newscontent[2].getBytes());
-					out.close();
-				}
-			} else
-				System.err.print("轉換失敗");
+			if (contain != null) {
+				if(tag.equals("地產焦點"))
+					saveNewsToFile(houseNewsParseProcess(contain), date, dirPath);
+				else if(tag.equals("房產王") || tag.equals("家居王") || tag.equals("豪宅王") || tag.equals("地產王"))
+					saveNewsToFile(housekingNewsParseProcess(contain), date, dirPath);
+				else
+					saveNewsToFile(commentNewsParseProcess(contain), date, dirPath);
+			} else{
+				transferFail(dirPath, i, url);
+			}
 		}
 	}
 	
 	/**
-	 * 其他新聞爬蟲處理
+	 * 一般新聞爬蟲處理
 	 * 
 	 * @param elem
 	 * @return
 	 */
-	private static String[] commentNewsParseProcess(Element elem){
-		String[] paresResult = new String[3];
-		paresResult[0] = elem.select("header").select("hgroup").text();
-		paresResult[1] = elem.select("p#introid").text();
-		paresResult[2] = elem.select("p#bcontent").text();
-		return paresResult;
+	private static String[] commentNewsParseProcess(Document contain){
+		String[] newscontent = {"",""};
+		for (Element elem : contain.select("article#maincontent.vertebrae")) {
+			// 截取新聞標題、內容
+			newscontent[0] = elem.select("header").select("hgroup").text();
+			newscontent[1] = elem.select("p").text();
+		}
+		return newscontent;
 	}
 	
 	/**
-	 * 房產新聞爬蟲特殊處理
+	 * 房產王、家居王、豪宅王、地產王新聞爬蟲處理
 	 * 
 	 * @param elem
 	 * @return
 	 */
-	private static String[] houseNewsParseProcess(Element elem){
-		String[] paresResult = new String[3];
-		paresResult[0] = elem.select("div.ncbox_cont").select("h1").text();
-		paresResult[1] = elem.select("p#introid").text();
-		paresResult[2] = elem.select("p#bcontent").text();
-		return paresResult;
+	private static String[] housekingNewsParseProcess(Document contain){
+		String[] newscontent = {"",""};
+		for (Element elem : contain.select("article#maincontent.vertebrae")) {
+			// 截取新聞標題、內容
+			newscontent[0] = elem.select("div.ncbox_cont").select("h1").text();
+			newscontent[1] = elem.select("div.articulum").select("p").text();
+		}
+		return newscontent;
+	}
+	
+	/**
+	 * 房產新聞爬蟲處理
+	 * 
+	 * @param elem
+	 * @return
+	 */
+	private static String[] houseNewsParseProcess(Document contain){
+		String[] newscontent = {"",""};
+		for (Element elem : contain.select("article#maincontent.vertebrae")) {
+			// 截取新聞標題、內容
+			newscontent[0] = elem.select("div.ncbox_cont").select("h1").text();
+			newscontent[1] = elem.select("p").text();
+		}
+		return newscontent;
+	}
+	
+	/**
+	 * 轉換失敗處理
+	 * 
+	 * @param dirPath
+	 * @param num
+	 * @param url
+	 * @throws IOException
+	 */
+	private static void transferFail(String dirPath, int num, String url) throws IOException{
+		File f = null;
+		OutputStream out = null;
+		System.err.println("轉換失敗");
+		f = new File(dirPath + "/轉換失敗" + num);
+		out = new FileOutputStream(f.getAbsolutePath());
+		out.write(url.getBytes());
+		out.close();
+	}
+	
+	/**
+	 * 儲存新聞內容至txt檔，路徑：./日期/分類/日期+新聞名稱.txt
+	 * 
+	 * @param newscontent
+	 * @param date
+	 * @param dirPath
+	 * @throws IOException
+	 */
+	private static void saveNewsToFile(String[] newscontent, String date, String dirPath) throws IOException{
+		
+		File f = null;
+		String filePath = null;
+		OutputStream out = null;
+		
+		// 建檔案名稱(時間+新聞標題)
+		filePath = date + newscontent[0] + ".txt";
+		f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>|  ]", "-"));
+		out = new FileOutputStream(f.getAbsolutePath());
+
+		// 寫入內容至檔案
+		out.write(newscontent[0].getBytes());
+		out.write("\n".getBytes());
+		out.write(newscontent[1].getBytes());
+		out.close();
 	}
 
 	@SuppressWarnings("static-access")
 	public static void main(String[] args) throws IOException {
 		String today = dateFormate.format(todayDate).toString();
-		String pastdayOfYear = "2014";
-		String pastdayOfMonth = "12";
-		String pastdayOfdate = "31";
+		String pastdayOfYear = "2010";
+		String pastdayOfMonth = "01";
+		String pastdayOfdate = "01";
 		String pastday = pastdayOfYear + pastdayOfMonth + pastdayOfdate;		
 		String url = null;
 		String newsTag = null;
@@ -158,7 +203,7 @@ public class AppleCrawler {
 			}
 
 			// 儲存新聞內容
-			saveNewsListText(pastday);
+			processNewsList(pastday);
 
 			C.add(C.DATE, Integer.parseInt("1"));
 	    }

@@ -111,16 +111,18 @@ public class CrawlerPack {
 	 * 在回傳時移除prefix
 	 *
 	 */
-	public static org.jsoup.nodes.Document xmlToJsoupDoc(String xml) {
+	public static org.jsoup.nodes.Document xmlToJsoupDoc(String xml) {		
+		if(xml != null){
+			// Tag 首字元非 a-zA-Z 時轉化為註解的問題
+			xml = xml.replaceAll("<([^A-Za-z\\/][^\\/>]*)>", "<" + prefix.toLowerCase() + "$1>")
+					.replaceAll("<\\/([^A-Za-z\\/][^\\/>]*)>", "</" + prefix.toLowerCase() + "$1>");
 
-		// Tag 首字元非 a-zA-Z 時轉化為註解的問題
-		xml = xml.replaceAll("<([^A-Za-z\\/][^\\/>]*)>", "<" + prefix.toLowerCase() + "$1>")
-				.replaceAll("<\\/([^A-Za-z\\/][^\\/>]*)>", "</" + prefix.toLowerCase() + "$1>");
+			// 將 xml(html/html5) 轉為 jsoup Document 物件
+			Document jsoupDoc = Jsoup.parse(xml, "", new Parser(new MyXmlTreeBuilder(prefix.toLowerCase())));
+			jsoupDoc.charset(StandardCharsets.UTF_8);
 
-		// 將 xml(html/html5) 轉為 jsoup Document 物件
-		Document jsoupDoc = Jsoup.parse(xml, "", new Parser(new MyXmlTreeBuilder(prefix.toLowerCase())));
-		jsoupDoc.charset(StandardCharsets.UTF_8);
-
-		return jsoupDoc;
+			return jsoupDoc;
+		}
+		return null;
 	}
 }

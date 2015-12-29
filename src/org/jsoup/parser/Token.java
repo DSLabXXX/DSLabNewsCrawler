@@ -129,7 +129,7 @@ abstract class Token {
             return selfClosing;
         }
 
-        @SuppressWarnings({"TypeMayBeWeakened"})
+        @SuppressWarnings({})
         final Attributes getAttributes() {
             return attributes;
         }
