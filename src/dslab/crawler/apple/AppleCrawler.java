@@ -44,7 +44,7 @@ public class AppleCrawler {
 	 * @param date
 	 * @throws IOException
 	 */
-	private static void processNewsList(String year, String date) throws IOException{
+	private static void processNewsList(String date) throws IOException{
 		
 		String dirPath = null;
 		String tag = null;
@@ -59,7 +59,7 @@ public class AppleCrawler {
 			System.out.println(tag);	
 			System.out.println(url);
 			
-			dirPath = "./蘋果日報" + year + "/" + date + "/" + tag;
+			dirPath = "./蘋果日報/" + tag;
 			dir = new File(dirPath);
 			dir.mkdirs();			
 			
@@ -204,7 +204,7 @@ public class AppleCrawler {
 			}
 
 			// 儲存新聞內容
-			processNewsList(pastdayOfYear, pastday);
+			processNewsList(pastday);
 
 			C.add(C.DATE, Integer.parseInt("1"));
 	    }
