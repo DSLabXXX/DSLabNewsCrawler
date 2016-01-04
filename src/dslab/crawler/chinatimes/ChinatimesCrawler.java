@@ -1,14 +1,20 @@
 package dslab.crawler.chinatimes;
 
 
+import java.io.IOException;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import dslab.crawler.pack.Crawler;
 import dslab.crawler.pack.CrawlerPack;
 
-public class ChinatimesCrawler {
+public class ChinatimesCrawler extends Crawler {
 
-	public static void main(String[] args) {
+	public void run() throws IOException{
+		
+		dateProcess();
+		
 		String api = "http://www.chinatimes.com/history-by-date/2015-12-01-260407";
         // 轉化為 jsoup 物件
         Document jsoupDoc = CrawlerPack.getFromXml(api);
