@@ -12,11 +12,17 @@ public class LtnLauncher {
 //		pastdayOfMonth = args[1];
 //		pastdayOfdate = args[2];
 		
-		ltn.pastdayOfYear = "2016";
+		ltn.pastdayOfYear = "2010";
 		ltn.pastdayOfMonth = "01";
-		ltn.pastdayOfdate = "04";
+		ltn.pastdayOfdate = "01";
 		
+		ltn.today = "20110101";
+		
+		// 抓取新聞連結
 		ltn.run();
+		
+		// 儲存新聞內容
+		ltn.processNewsList("./自由時報/");
 	}
 
 }
