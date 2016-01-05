@@ -4,12 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-
 import org.jsoup.nodes.Document;
 
 public class Crawler {
@@ -31,9 +27,6 @@ public class Crawler {
 	 */
 	public void dateProcess(){
 		pastday = pastdayOfYear + pastdayOfMonth + pastdayOfdate;
-		Date todayDate = Calendar.getInstance().getTime();
-		DateFormat dateFormate = new SimpleDateFormat("yyyyMMdd");
-		today = dateFormate.format(todayDate).toString();
 		C = Calendar.getInstance();
 		C.set(Integer.parseInt(pastdayOfYear), Integer.parseInt(pastdayOfMonth) - 1, Integer.parseInt(pastdayOfdate));
 	}
