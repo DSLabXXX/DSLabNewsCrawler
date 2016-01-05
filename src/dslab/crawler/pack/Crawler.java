@@ -122,12 +122,18 @@ public class Crawler {
 			dir = new File(dirPath);
 			dir.mkdirs();			
 			
-			customerProcessNewsList(tag, url, date, dirPath, i);
+			Document contain = CrawlerPack.getFromXml(url);
+			
+			if (contain != null) {
+				customerProcessNewsList(tag, url, date, dirPath, contain);
+			} else{
+				transferFail(dirPath, i, url);
+			}
 		}
 	}
 	
 	/**
-	 * 依照不同新聞客製化處理
+	 * 客製化處理連結
 	 * 
 	 * @param tag
 	 * @param url
@@ -136,7 +142,7 @@ public class Crawler {
 	 * @param tmp
 	 * @throws IOException
 	 */
-	public void customerProcessNewsList(String tag, String url, String date, String dirPath, int tmp) throws IOException{
+	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException{
 		
 	}
 	
@@ -157,6 +163,9 @@ public class Crawler {
 	    }
 	}
 	
+	/**
+	 * 客製化執行
+	 */
 	public void customerRunProcess(){
 
 	}

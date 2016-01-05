@@ -11,19 +11,13 @@ import dslab.crawler.pack.CrawlerPack;
 public class AppleCrawler extends Crawler{
 	
 	@Override
-	public void customerProcessNewsList(String tag, String url, String date, String dirPath, int num) throws IOException{
-		Document contain = CrawlerPack.getFromXml(url);
-		
-		if (contain != null) {
-			if(tag.equals("地產焦點"))
-				saveNewsToFile(houseNewsParseProcess(contain), date, dirPath);
-			else if(tag.equals("房產王") || tag.equals("家居王") || tag.equals("豪宅王") || tag.equals("地產王"))
-				saveNewsToFile(housekingNewsParseProcess(contain), date, dirPath);
-			else
-				saveNewsToFile(commentNewsParseProcess(contain), date, dirPath);
-		} else{
-			transferFail(dirPath, num, url);
-		}
+	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException{
+		if (tag.equals("地產焦點"))
+			saveNewsToFile(houseNewsParseProcess(contain), date, dirPath);
+		else if (tag.equals("房產王") || tag.equals("家居王") || tag.equals("豪宅王") || tag.equals("地產王"))
+			saveNewsToFile(housekingNewsParseProcess(contain), date, dirPath);
+		else
+			saveNewsToFile(commentNewsParseProcess(contain), date, dirPath);
 	}
 	
 	@Override

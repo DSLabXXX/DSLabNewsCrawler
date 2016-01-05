@@ -1,14 +1,14 @@
 package dslab.crawler.chinatimes;
 
-
 import java.io.IOException;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import dslab.crawler.pack.Crawler;
 import dslab.crawler.pack.CrawlerPack;
 
-public class ChinatimesCrawler extends Crawler {
+public class ChinaElectronicsNews extends Crawler{
 	
 	@Override
 	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException{
@@ -22,7 +22,7 @@ public class ChinatimesCrawler extends Crawler {
 		String currentPage;
 		
 		//找出最後一頁頁數
-		url = "http://www.chinatimes.com/history-by-date/" + pastdayOfYear + "-" + pastdayOfMonth + "-" + pastdayOfdate + "-2601";
+		url = "http://www.chinatimes.com/history-by-date/" + pastdayOfYear + "-" + pastdayOfMonth + "-" + pastdayOfdate + "-2604";
     	newsLinks = CrawlerPack.getFromXml(url);
     	for (Element elem : newsLinks.select("div.pagination.clear-fix").select("li")){
     		if(elem.text().equals("最後一頁") && !elem.select("a[href]").attr("href").equals(""))
