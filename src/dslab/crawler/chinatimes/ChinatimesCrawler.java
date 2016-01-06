@@ -22,7 +22,7 @@ public class ChinatimesCrawler extends Crawler {
 		String currentPage;
 		
 		//找出最後一頁頁數
-		url = "http://www.chinatimes.com/history-by-date/" + pastdayOfYear + "-" + pastdayOfMonth + "-" + pastdayOfdate + "-2601";
+		setUrl();
     	newsLinks = CrawlerPack.getFromXml(url);
     	for (Element elem : newsLinks.select("div.pagination.clear-fix").select("li")){
     		if(elem.text().equals("最後一頁") && !elem.select("a[href]").attr("href").equals(""))
@@ -38,6 +38,10 @@ public class ChinatimesCrawler extends Crawler {
 			}
     	}
 	}	
+	
+	public void setUrl(){
+		url = "http://www.chinatimes.com/history-by-date/" + pastdayOfYear + "-" + pastdayOfMonth + "-" + pastdayOfdate + "-2601";
+	}
 	
 	/**
 	 * 一般新聞爬蟲處理
