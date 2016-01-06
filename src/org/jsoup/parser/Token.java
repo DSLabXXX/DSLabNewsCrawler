@@ -295,6 +295,7 @@ abstract class Token {
     }
 
     final StartTag asStartTag() {
+    	//如果獲取的tag為空，給予空的StartTag;
     	if (this instanceof Comment)
     	{
     		StartTag s = new StartTag();

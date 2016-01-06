@@ -17,23 +17,12 @@ public class Ch3Coz1 {
         // @see http://data.taipei/opendata/datalist/datasetMeta?oid=6556e1e8-c908-42d5-b984-b3f7337b139b
 //		String api = "http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=55ec6d6e-dc5c-4268-a725-d04cc262172b";
 
-		String url = "http://www.chinatimes.com/history-by-date/2010-01-02-2601?page=5";
+		String url = "https://www.ptt.cc/bbs/Gossiping/index.html";
 		Document newsLinks = CrawlerPack.getFromXml(url);
-		for (Element elem : newsLinks.select("div.pagination.clear-fix").select("li")) {
-			System.out.println(elem);
-		}
-
-		String url2 = "http://www.chinatimes.com/history-by-date/2010-01-03-2601?page=2";
-		newsLinks = CrawlerPack.getFromXml(url2);
-
-		for (Element elem : newsLinks.select("div.pagination.clear-fix").select("li")) {
-			System.err.println(elem);
-		}
-
-		String url3 = "http://www.chinatimes.com/history-by-date/2010-01-02-2601?page=2";
-		newsLinks = CrawlerPack.getFromXml(url3);
-
-		for (Element elem : newsLinks.select("div.pagination.clear-fix").select("li")) {
+		String[] newscontent = {"",""};
+		
+		for (Element elem : newsLinks.select("div.r-ent")) {
+			// 截取新聞標題、內容
 			System.out.println(elem);
 		}
         
