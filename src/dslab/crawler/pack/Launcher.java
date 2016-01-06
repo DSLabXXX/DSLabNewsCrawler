@@ -72,21 +72,21 @@ public class Launcher {
 	}
 	
 	public static void main(String[] args) throws IOException {
-//		Integer year = 0;
-//		Integer today = 0;
-//
-//		for (Integer i = 0; i < 6; i++) {
+		Integer year = 0;
+		Integer today = 0;
+
+		for (Integer i = 0; i < 6; i++) {
 			apple(args);
 			ltn(args);
 			chinatimes(args);
 			businesstimes(args);
 			dog(args);
 			chinaelectrontimes(args);
-//
-//			year = Integer.parseInt(args[0]) + 1;
-//			args[0] = year.toString();
-//			today = Integer.parseInt(args[3]) + 10000;
-//			args[3] = today.toString();
-//		}
+
+			year = Integer.parseInt(args[0]) + 1;
+			args[0] = year.toString();
+			today = Integer.parseInt(args[3]) + 10000;
+			args[3] = today.toString();
+		}
 	}
 }
