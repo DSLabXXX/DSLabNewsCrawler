@@ -17,11 +17,11 @@ public class Ch3Coz1 {
         // @see http://data.taipei/opendata/datalist/datasetMeta?oid=6556e1e8-c908-42d5-b984-b3f7337b139b
 //		String api = "http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=55ec6d6e-dc5c-4268-a725-d04cc262172b";
 
-		String url = "https://www.ptt.cc/bbs/Gossiping/index.html";
+		String url = "https://www.ptt.cc/index.html";
 		Document newsLinks = CrawlerPack.getFromXml(url);
 		String[] newscontent = {"",""};
 		
-		for (Element elem : newsLinks.select("div.r-ent")) {
+		for (Element elem : newsLinks.select("href")) {
 			// 截取新聞標題、內容
 			System.out.println(elem);
 		}

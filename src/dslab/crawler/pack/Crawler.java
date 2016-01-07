@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
+
 import org.jsoup.nodes.Document;
 
 public class Crawler {
@@ -20,6 +22,7 @@ public class Crawler {
 	public String pastday;
 	public String url;
 	public String newsTag;
+	public String elemString;
 	public Document newsLinks;
 	public Calendar C;
 
@@ -77,6 +80,9 @@ public class Crawler {
 		File f = null;
 		String filePath = null;
 		OutputStream out = null;
+		
+		if(newscontent[0].equals(""))
+			newscontent[0] = "---------抓取標題錯誤---------" + new Random().nextInt(10000000);
 
 		// 建檔案名稱(時間+新聞標題)
 		filePath = date + newscontent[0] + ".txt";

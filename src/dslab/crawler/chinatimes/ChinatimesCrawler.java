@@ -51,12 +51,16 @@ public class ChinatimesCrawler extends Crawler {
 	 */
 	private String[] commentNewsParseProcess(Document contain){
 		String[] newscontent = {"",""};
-		
-		for (Element elem : contain.select("div.page_container.stack.clear-fix.newspapers_ad")) {
+		setSelectElement();
+		for (Element elem : contain.select(elemString)) {
 			// 截取新聞標題、內容
 			newscontent[0] = elem.select("header").select("h1").text();
 			newscontent[1] = elem.select("article.clear-fix").select("p").text();
 		}
 		return newscontent;
+	}
+	
+	public void setSelectElement(){
+		elemString = "div.page_container.stack.clear-fix.newspapers_ad";
 	}
 }
