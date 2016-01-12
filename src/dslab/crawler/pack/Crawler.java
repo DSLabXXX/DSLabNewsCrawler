@@ -190,7 +190,7 @@ public class Crawler {
 			dir = new File(dirPath);
 			dir.mkdirs();
 
-			Document contain = PttCrawlerPack.getFromXml(url, cookies);
+			Document contain = PttCrawlerPack.getFromXml(url);
 
 			for (int j = 0; j < 5; j++) {
 				if (contain != null) {

@@ -32,7 +32,7 @@ public class Ch3Coz1 {
 		Cookie[] cookies = new Cookie[2];
 		cookies[0] = new Cookie("/","over18","1");
 		cookies[0].setDomain("www.ptt.cc");
-        System.out.print(PttCrawlerPack.getFromRemote(url, cookies));
+        System.out.print(PttCrawlerPack.getFromRemote(url));
 
     }
 }

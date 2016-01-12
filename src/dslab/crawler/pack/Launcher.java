@@ -84,18 +84,18 @@ public class Launcher {
 //		Integer currentday = 0;
 //
 //		for (Integer i = 1; i < 6; i++) {
-//			apple(args);
-//			ltn(args);
-//			chinatimes(args);
-//			businesstimes(args);
-//			dog(args);
-//			chinaelectrontimes(args);
+			apple(args);
+			ltn(args);
+			chinatimes(args);
+			businesstimes(args);
+			dog(args);
+			chinaelectrontimes(args);
 //
 //			year = Integer.parseInt(args[0]) + 1;
 //			args[0] = year.toString();
 //			currentday = Integer.parseInt(args[3]) + 10000;
 //			args[3] = currentday.toString();
 //		}
-		ptt(args);
+//		ptt(args);
 	}
 }
