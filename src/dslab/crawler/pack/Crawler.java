@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
+import org.apache.commons.httpclient.Cookie;
 import org.jsoup.nodes.Document;
+
+import dslab.crawler.ptt.PttCrawlerPack;
 
 public class Crawler {
 
@@ -171,7 +174,7 @@ public class Crawler {
 	 * 
 	 * @throws IOException
 	 */
-	public void processPttList(String tag) throws IOException {
+	public void processPttList(String tag, Cookie[] cookies) throws IOException {
 
 		String dirPath = null;
 		String url = null;
@@ -187,7 +190,7 @@ public class Crawler {
 			dir = new File(dirPath);
 			dir.mkdirs();
 
-			Document contain = CrawlerPack.getFromXml(url);
+			Document contain = PttCrawlerPack.getFromXml(url, cookies);
 
 			for (int j = 0; j < 5; j++) {
 				if (contain != null) {
