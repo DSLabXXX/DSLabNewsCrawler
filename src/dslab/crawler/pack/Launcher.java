@@ -8,7 +8,7 @@ import dslab.crawler.chinatimes.ChinaElectronicsNews;
 import dslab.crawler.chinatimes.ChinatimesCrawler;
 import dslab.crawler.chinatimes.DogCrawler;
 import dslab.crawler.ltn.LtnCrawler;
-import dslab.crawler.ptt.PttCrawler;
+import dslab.crawler.ptt.PttGossipingCrawler;
 
 public class Launcher {
 	
@@ -72,11 +72,11 @@ public class Launcher {
 		chinaelectrontimes.processNewsList("./中時電子報/");
 	}
 	
-	private static void ptt(String[] args) throws IOException{
-		PttCrawler ptt = new PttCrawler();
-		ptt.startIdx = args[0];
+	private static void pttgossiping(Integer startIdx) throws IOException{
+		PttGossipingCrawler ptt = new PttGossipingCrawler();
+		ptt.startIdx = startIdx.toString();
 		ptt.run();
-		ptt.processNewsList("Gossiping");
+		ptt.processNewsList("./PttGossiping/");
 	}
 	
 	public static void main(String[] args) throws IOException {
@@ -84,18 +84,21 @@ public class Launcher {
 //		Integer currentday = 0;
 //
 //		for (Integer i = 1; i < 6; i++) {
-			apple(args);
-			ltn(args);
-			chinatimes(args);
-			businesstimes(args);
-			dog(args);
-			chinaelectrontimes(args);
+//			apple(args);
+//			ltn(args);
+//			chinatimes(args);
+//			businesstimes(args);
+//			dog(args);
+//			chinaelectrontimes(args);
 //
 //			year = Integer.parseInt(args[0]) + 1;
 //			args[0] = year.toString();
 //			currentday = Integer.parseInt(args[3]) + 10000;
 //			args[3] = currentday.toString();
 //		}
-//		ptt(args);
+		for(Integer i = Integer.parseInt(args[0]); i <= Integer.parseInt(args[1]); i++){
+			pttgossiping(i);
+		}
+		
 	}
 }

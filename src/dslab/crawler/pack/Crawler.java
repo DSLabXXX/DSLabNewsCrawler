@@ -8,10 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Random;
 
-import org.apache.commons.httpclient.Cookie;
 import org.jsoup.nodes.Document;
-
-import dslab.crawler.ptt.PttCrawlerPack;
 
 public class Crawler {
 
@@ -19,6 +16,7 @@ public class Crawler {
 	public ArrayList<String[]> newsTagLinkList = new ArrayList<String[]>();
 	public String today;
 	public String startIdx;
+	public String endIdx;
 	public String pastdayOfYear;
 	public String pastdayOfMonth;
 	public String pastdayOfdate;
@@ -150,47 +148,6 @@ public class Crawler {
 			dir.mkdirs();
 
 			Document contain = CrawlerPack.getFromXml(url);
-
-			for (int j = 0; j < 5; j++) {
-				if (contain != null) {
-					customerProcessNewsList(tag, url, date, dirPath, contain);
-					break;
-				}
-				else if (j == 4){
-					transferFail(dirPath, i, url);
-				}
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				contain = CrawlerPack.getFromXml(url);
-			}
-		}
-	}
-	
-	/**
-	 * 處理PTT連結清單
-	 * 
-	 * @throws IOException
-	 */
-	public void processPttList(String tag, Cookie[] cookies) throws IOException {
-
-		String dirPath = null;
-		String url = null;
-		String date = null;
-		File dir;
-
-		for (int i = 0; i < newsLinkList.size(); i++) {
-
-			// 建路徑資料夾(時間/新聞分類)
-			url = newsLinkList.get(i).toString();
-
-			dirPath = "./Ptt/" + tag;
-			dir = new File(dirPath);
-			dir.mkdirs();
-
-			Document contain = PttCrawlerPack.getFromXml(url);
 
 			for (int j = 0; j < 5; j++) {
 				if (contain != null) {
