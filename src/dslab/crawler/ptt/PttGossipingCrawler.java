@@ -138,12 +138,12 @@ public class PttGossipingCrawler extends Crawler{
 				tmp = elem.html().split("</div>")[4].split("<span class=\"f2\">");
 				newscontent[3] = tmp[tmp.length - 1].split(": ")[2].split("<div")[0].split("</span>")[0];
 			} catch (Exception e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 				try {
 					newscontent[3] = elem.ownText().split("¡» From: ")[1];
 				} catch (Exception e1) {
-					e1.printStackTrace();
-					newscontent[3] = "";
+//					e1.printStackTrace();
+					newscontent[3] = "µLªkºI¨úIP";
 				}
 			}
 			
@@ -178,7 +178,12 @@ public class PttGossipingCrawler extends Crawler{
 		String time;
 		String date;
 		
-		year = dateString.split(" ")[4];
+		try {
+			year = dateString.split(" ")[4];
+		} catch (Exception e) {
+			e.printStackTrace();
+			year = "2xxx";
+		}
 		
 	    if(dateString.split(" ")[1].equals("Jan"))
 	        month = "01";
