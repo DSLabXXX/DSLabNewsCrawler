@@ -37,11 +37,14 @@ public class PttGossipingCrawler extends Crawler{
 		String filePath = null;
 		OutputStream out = null;
 		
-		if(newscontent[1].equals(""))
-			newscontent[1] = "---------抓取標題錯誤---------" + new Random().nextInt(10000000);
-
 		// 建檔案名稱(時間+新聞標題)
-		filePath = newscontent[2] + "_" + newscontent[1] + "_" + newscontent[0] + ".txt";
+		if(newscontent[1].equals("")){
+			newscontent[1] = "---------無法抓取標題---------" + new Random().nextInt(10000000);
+			filePath = newscontent[1] + ".txt";
+		}
+		else
+			filePath = newscontent[2] + "_" + newscontent[1] + "_" + newscontent[0] + ".txt";
+		
 		f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
 		out = new FileOutputStream(f.getAbsolutePath());
 		
@@ -55,7 +58,6 @@ public class PttGossipingCrawler extends Crawler{
 		out.close();
 	}
 	
-	@Override
 	public void run(){
 
 		XTrustProvider.install();
@@ -135,20 +137,30 @@ public class PttGossipingCrawler extends Crawler{
 			}
 			// 截取IP
 			try {
-				tmp = elem.html().split("</div>")[4].split("<span class=\"f2\">");
-				newscontent[3] = tmp[tmp.length - 1].split(": ")[2].split("<div")[0].split("</span>")[0];
+				newscontent[3] = elem.ownText().split("來自: ")[1];
 			} catch (Exception e) {
 //				e.printStackTrace();
 				try {
-					newscontent[3] = elem.ownText().split("◆ From: ")[1];
+					tmp = elem.html().split("</div>")[4].split("<span class=\"f2\">");
+					newscontent[3] = tmp[tmp.length - 1].split(": ")[2].split("<div")[0].split("</span>")[0];
 				} catch (Exception e1) {
 //					e1.printStackTrace();
-					newscontent[3] = "無法截取IP";
+					try {
+						newscontent[3] = elem.ownText().split("◆ From: ")[1];						
+					} catch (Exception e2) {
+//						e2.printStackTrace();
+						newscontent[3] = "無法截取IP";
+					}
 				}
 			}
 			
 			// 截取內文
-			newscontent[4] = elem.ownText() + "\n";
+			try {
+				newscontent[4] = elem.html().split("</div>")[4].split("<div")[0] + "\n";
+			} catch (Exception e) {
+//				e.printStackTrace();
+				newscontent[4] = "";
+			}
 			
 			// 截取推文
 			for(Element elem2 : elem.select("div.push")){

@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Random;
 
 import org.jsoup.nodes.Document;
@@ -25,16 +24,6 @@ public class Crawler {
 	public String newsTag;
 	public String elemString;
 	public Document newsLinks;
-	public Calendar C;
-
-	/**
-	 * 日期變數建立
-	 */
-	public void dateProcess() {
-		pastday = pastdayOfYear + pastdayOfMonth + pastdayOfdate;
-		C = Calendar.getInstance();
-		C.set(Integer.parseInt(pastdayOfYear), Integer.parseInt(pastdayOfMonth) - 1, Integer.parseInt(pastdayOfdate));
-	}
 
 	/**
 	 * 加入新聞連結串列
@@ -64,6 +53,11 @@ public class Crawler {
 			System.out.println(url);
 		}
 	}
+	
+	public void clearList(){
+		newsLinkList = new ArrayList<String>();
+		newsTagLinkList = new ArrayList<String[]>();
+	}
 
 	/**
 	 * 儲存新聞內容至txt檔，路徑：./日期/分類/日期+新聞名稱.txt
@@ -82,11 +76,13 @@ public class Crawler {
 		String filePath = null;
 		OutputStream out = null;
 		
-		if(newscontent[0].equals(""))
-			newscontent[0] = "---------抓取標題錯誤---------" + new Random().nextInt(10000000);
-
 		// 建檔案名稱(時間+新聞標題)
-		filePath = date + newscontent[0] + ".txt";
+		if(newscontent[0].equals("")){
+			newscontent[0] = "---------抓取標題錯誤---------" + new Random().nextInt(10000000);
+			filePath = newscontent[0] + ".txt";
+		}
+		else
+			filePath = date + newscontent[0] + ".txt";
 		f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
 		out = new FileOutputStream(f.getAbsolutePath());
 
@@ -165,6 +161,7 @@ public class Crawler {
 				contain = CrawlerPack.getFromXml(url);
 			}
 		}
+		clearList();
 	}
 
 	/**
@@ -180,23 +177,6 @@ public class Crawler {
 	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain)
 			throws IOException {
 
-	}
-
-	@SuppressWarnings("static-access")
-	public void run() throws IOException {
-
-		dateProcess();
-
-		while (Integer.parseInt(pastday) < Integer.parseInt(today)) {
-			pastdayOfYear = String.format("%04d", C.get(Calendar.YEAR));
-			pastdayOfMonth = String.format("%02d", C.get(Calendar.MONTH) + 1);
-			pastdayOfdate = String.format("%02d", C.get(Calendar.DAY_OF_MONTH));
-			pastday = pastdayOfYear + pastdayOfMonth + pastdayOfdate;
-
-			customerRunProcess();
-
-			C.add(C.DATE, Integer.parseInt("1"));
-		}
 	}
 
 	/**
