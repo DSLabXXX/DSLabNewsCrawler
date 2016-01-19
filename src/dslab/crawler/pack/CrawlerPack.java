@@ -94,10 +94,20 @@ public class CrawlerPack {
 		try {
 			// 透過 Apache VFS 取回指定的遠端資料
 			return IOUtils.toString(VFS.getManager().resolveFile(url).getContent().getInputStream(), "UTF-8");
+			
 		} catch (Exception ex) {
+			if(ex.getMessage().contains("because it is a not a file.")){
+				System.out.println(ex.getMessage());
+				return null;
+			}
 			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-			return null;
+//			ex.printStackTrace();
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+//				e.printStackTrace();
+			}
+			return getFromRemote(url);
 		}
 	}
 

@@ -31,9 +31,18 @@ public class PttCrawlerPack extends CrawlerPack{
 			return IOUtils.toString(file.getContent().getInputStream(), "UTF-8");
 			
 		} catch (Exception ex) {
+			if(ex.getMessage().contains("because it is a not a file.")){
+				System.out.println(ex.getMessage());
+				return null;
+			}
 			System.out.println(ex.getMessage());
-			ex.printStackTrace();
-			return null;
+//			ex.printStackTrace();
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return getFromRemote(url);
 		}
 	}
 	/**

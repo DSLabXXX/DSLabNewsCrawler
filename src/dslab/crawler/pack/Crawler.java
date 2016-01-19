@@ -75,25 +75,25 @@ public class Crawler {
 		File f = null;
 		String filePath = null;
 		OutputStream out = null;
-		
+
 		// 建檔案名稱(時間+新聞標題)
-		if(newscontent[0].equals("")){
+		if (newscontent[0].equals("")) {
 			newscontent[0] = "---------抓取標題錯誤---------" + new Random().nextInt(10000000);
 			filePath = newscontent[0] + ".txt";
-		}
-		else
+		} else {
 			filePath = date + newscontent[0] + ".txt";
-		f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
-		out = new FileOutputStream(f.getAbsolutePath());
+			f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
+			out = new FileOutputStream(f.getAbsolutePath());
 
-		System.out.println(date);
-		System.out.println(newscontent[0]);
+			System.out.println(date);
+			System.out.println(newscontent[0]);
 
-		// 寫入內容至檔案
-		out.write(newscontent[0].getBytes());
-		out.write("\n".getBytes());
-		out.write(newscontent[1].getBytes());
-		out.close();
+			// 寫入內容至檔案
+			out.write(newscontent[0].getBytes());
+			out.write("\n".getBytes());
+			out.write(newscontent[1].getBytes());
+			out.close();
+		}
 	}
 
 	/**

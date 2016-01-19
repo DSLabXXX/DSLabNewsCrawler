@@ -42,20 +42,19 @@ public class PttGossipingCrawler extends Crawler{
 			newscontent[1] = "---------無法抓取標題---------" + new Random().nextInt(10000000);
 			filePath = newscontent[1] + ".txt";
 		}
-		else
+		else{
 			filePath = newscontent[2] + "_" + newscontent[1] + "_" + newscontent[0] + ".txt";
-		
-		f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
-		out = new FileOutputStream(f.getAbsolutePath());
-		
-		System.out.println(filePath);
+			f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
+			out = new FileOutputStream(f.getAbsolutePath());
 
-		// 寫入內容至檔案
-		for (int i = 0; i < newscontent.length; i++) {
-			out.write(newscontent[i].getBytes());
-			out.write("\n".getBytes());
+			// 寫入內容至檔案
+			for (int i = 0; i < newscontent.length; i++) {
+				out.write(newscontent[i].getBytes());
+				out.write("\n".getBytes());
+			}
+			out.close();
 		}
-		out.close();
+		System.out.println(filePath);
 	}
 	
 	public void run(){
