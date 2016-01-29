@@ -78,12 +78,19 @@ public class Crawler {
 
 		// 建檔案名稱(時間+新聞標題)
 		if (newscontent[0].equals("")) {
-			newscontent[0] = "---------抓取標題錯誤---------" + new Random().nextInt(10000000);
+			newscontent[0] = "---------抓取標題為空---------" + new Random().nextInt(10000000);
 			filePath = newscontent[0] + ".txt";
 		} else {
 			filePath = date + newscontent[0] + ".txt";
-			f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
-			out = new FileOutputStream(f.getAbsolutePath());
+			f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
+			try {
+				out = new FileOutputStream(f.getAbsolutePath());
+			} catch (Exception e) {
+				newscontent[0] = "---------抓取標題錯誤---------" + new Random().nextInt(10000000);
+				filePath = newscontent[0] + ".txt";
+				f = new File(dirPath + "/" + filePath);
+				out = new FileOutputStream(f.getAbsolutePath());
+			}
 
 			System.out.println(date);
 			System.out.println(newscontent[0]);
