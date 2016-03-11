@@ -14,15 +14,15 @@ public class LtnCrawler extends Crawler{
 	@Override
 	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException{
 		if (tag.equals("社論") || tag.equals("自由廣場") || tag.equals("自由談"))
-			saveNewsToFile(editorialNewsParseProcess(contain), date, dirPath);
+			processNewsContain(editorialNewsParseProcess(contain), date, dirPath);
 		else if (tag.equals("影視焦點"))
-			saveNewsToFile(entertainmentNewsParseProcess(contain), date, dirPath);
+			processNewsContain(entertainmentNewsParseProcess(contain), date, dirPath);
 		else if (tag.equals("體育新聞") || tag.equals("運動彩券"))
-			saveNewsToFile(sportNewsParseProcess(contain), date, dirPath);
+			processNewsContain(sportNewsParseProcess(contain), date, dirPath);
 		else if (tag.equals("鏗鏘集"))
-			saveNewsToFile(talkNewsParseProcess(contain), date, dirPath);
+			processNewsContain(talkNewsParseProcess(contain), date, dirPath);
 		else
-			saveNewsToFile(commentNewsParseProcess(contain), date, dirPath);
+			processNewsContain(commentNewsParseProcess(contain), date, dirPath);
 	}
 	
 	@Override

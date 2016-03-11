@@ -9,6 +9,8 @@ import java.util.Random;
 
 import org.jsoup.nodes.Document;
 
+import csist.c4isr.common.net.TcpLink;
+
 public class Crawler {
 
 	public ArrayList<String> newsLinkList = new ArrayList<String>();
@@ -24,6 +26,7 @@ public class Crawler {
 	public String newsTag;
 	public String elemString;
 	public Document newsLinks;
+	public TcpLink tcpLink;
 
 	/**
 	 * 加入新聞連結串列
@@ -59,6 +62,19 @@ public class Crawler {
 		newsTagLinkList = new ArrayList<String[]>();
 	}
 
+
+	public void processNewsContain(String[] newscontent, String date, String dirPath) throws IOException {
+		saveNewsToFile(newscontent, date, dirPath);
+		sentNewsToStream(newscontent);
+	}
+	
+	private void sentNewsToStream(String[] newscontent){
+		tcpLink.writeBytes(newscontent[0].getBytes());
+		System.out.println(newscontent[0]);
+		tcpLink.writeBytes("\n".getBytes());
+		tcpLink.writeBytes(newscontent[1].getBytes());
+	}
+	
 	/**
 	 * 儲存新聞內容至txt檔，路徑：./日期/分類/日期+新聞名稱.txt
 	 * 
@@ -70,8 +86,8 @@ public class Crawler {
 	 *            儲存路徑
 	 * @throws IOException
 	 */
-	public void saveNewsToFile(String[] newscontent, String date, String dirPath) throws IOException {
-
+	private void saveNewsToFile(String[] newscontent, String date, String dirPath) throws IOException{
+		
 		File f = null;
 		String filePath = null;
 		OutputStream out = null;

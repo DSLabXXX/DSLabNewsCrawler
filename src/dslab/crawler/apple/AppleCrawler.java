@@ -13,11 +13,11 @@ public class AppleCrawler extends Crawler{
 	@Override
 	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException{
 		if (tag.equals("地產焦點"))
-			saveNewsToFile(houseNewsParseProcess(contain), date, dirPath);
+			processNewsContain(houseNewsParseProcess(contain), date, dirPath);
 		else if (tag.equals("房產王") || tag.equals("家居王") || tag.equals("豪宅王") || tag.equals("地產王"))
-			saveNewsToFile(housekingNewsParseProcess(contain), date, dirPath);
+			processNewsContain(housekingNewsParseProcess(contain), date, dirPath);
 		else
-			saveNewsToFile(commentNewsParseProcess(contain), date, dirPath);
+			processNewsContain(commentNewsParseProcess(contain), date, dirPath);
 	}
 	
 	@Override

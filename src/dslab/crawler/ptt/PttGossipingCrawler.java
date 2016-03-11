@@ -16,7 +16,7 @@ public class PttGossipingCrawler extends Crawler{
 	
 	@Override
 	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException{
-		saveNewsToFile(commentNewsParseProcess(contain), date, dirPath);
+		processNewsContain(commentNewsParseProcess(contain), date, dirPath);
 	}
 	
 	/**
@@ -31,7 +31,7 @@ public class PttGossipingCrawler extends Crawler{
 	 * @throws IOException
 	 */
 	@Override
-	public void saveNewsToFile(String[] newscontent, String date, String dirPath) throws IOException {
+	public void processNewsContain(String[] newscontent, String date, String dirPath) throws IOException {
 
 		File f = null;
 		String filePath = null;
