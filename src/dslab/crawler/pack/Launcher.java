@@ -1,6 +1,7 @@
 package dslab.crawler.pack;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.Calendar;
 
 import csist.c4isr.common.net.TcpLink;
@@ -107,15 +108,22 @@ public class Launcher {
 		C.set(Integer.parseInt(pastdayOfYear), Integer.parseInt(pastdayOfMonth) - 1, Integer.parseInt(pastdayOfdate));
 	}
 	
-	@SuppressWarnings("static-access")
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		
 		TcpLink tcp = new TcpLink();
-		tcp.setMode(TcpLink.DATA_MODE);
-		tcp.setHost("192.168.42.186");
-		tcp.setPort(9999);
-		tcp.connect();
-		tcp.start();
+//		tcp.setMode(TcpLink.DATA_MODE);
+//		tcp.setHost("192.168.4.213");
+//		tcp.setPort(9999);
+//		tcp.connect();
+//		tcp.start();
+//		
+//		int i = 0;
+//		while(true){
+//			tcp.writeBytes(("string\n").getBytes());
+//			System.err.println("string" + i++);
+//			Thread.sleep(500);
+//		}
+//		tcp.destroy();
 		
 		AppleCrawler apple = new AppleCrawler();
 		LtnCrawler ltn = new LtnCrawler();
@@ -154,6 +162,6 @@ public class Launcher {
 //			System.out.println("頁數：" + i);
 //		}
 		
-		System.out.println("抓取完成!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//		System.out.println("抓取完成!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	}
 }

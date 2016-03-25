@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -65,14 +66,14 @@ public class Crawler {
 
 	public void processNewsContain(String[] newscontent, String date, String dirPath) throws IOException {
 		saveNewsToFile(newscontent, date, dirPath);
-		sentNewsToStream(newscontent);
+//		sentNewsToStream(newscontent);
 	}
 	
 	private void sentNewsToStream(String[] newscontent){
-		tcpLink.writeBytes(newscontent[0].getBytes());
+		tcpLink.writeBytes(newscontent[0].getBytes(), "UTF-8");
 		System.out.println(newscontent[0]);
-		tcpLink.writeBytes("\n".getBytes());
-		tcpLink.writeBytes(newscontent[1].getBytes());
+		tcpLink.writeBytes("\n".getBytes(), "UTF-8");
+		tcpLink.writeBytes(newscontent[1].getBytes(), "UTF-8");
 	}
 	
 	/**
@@ -90,7 +91,7 @@ public class Crawler {
 		
 		File f = null;
 		String filePath = null;
-		OutputStream out = null;
+		OutputStreamWriter out = null;
 
 		// 建檔案名稱(時間+新聞標題)
 		if (newscontent[0].equals("")) {
@@ -100,21 +101,22 @@ public class Crawler {
 			filePath = date + newscontent[0] + ".txt";
 			f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
 			try {
-				out = new FileOutputStream(f.getAbsolutePath());
+				out = new OutputStreamWriter(new FileOutputStream(f.getAbsolutePath()), "UTF-8");
+				System.out.print(f.getAbsolutePath());
 			} catch (Exception e) {
 				newscontent[0] = "---------抓取標題錯誤---------" + new Random().nextInt(10000000);
 				filePath = newscontent[0] + ".txt";
 				f = new File(dirPath + "/" + filePath);
-				out = new FileOutputStream(f.getAbsolutePath());
+				out = new OutputStreamWriter(new FileOutputStream(f.getAbsolutePath()), "UTF-8");
 			}
 
 			System.out.println(date);
 			System.out.println(newscontent[0]);
 
 			// 寫入內容至檔案
-			out.write(newscontent[0].getBytes());
-			out.write("\n".getBytes());
-			out.write(newscontent[1].getBytes());
+			out.write(newscontent[0]);
+			out.write("\n");
+			out.write(newscontent[1]);
 			out.close();
 		}
 	}
