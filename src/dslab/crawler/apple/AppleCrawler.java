@@ -23,7 +23,7 @@ public class AppleCrawler extends Crawler{
 	@Override
 	public void customerRunProcess(){
 		url = "http://www.appledaily.com.tw/appledaily/archive/" + pastday;
-    	newsLinks = CrawlerPack.getFromHtml(url);
+    	newsLinks = CrawlerPack.start().getFromHtml(url);
 
 		for (Element elem : newsLinks.select("h2.nust.clearmen")) {
 			newsTag = elem.text();

@@ -23,7 +23,7 @@ public class ChinatimesCrawler extends Crawler {
 		
 		//找出最後一頁頁數
 		setUrl();
-    	newsLinks = CrawlerPack.getFromXml(url);
+    	newsLinks = CrawlerPack.start().getFromXml(url);
     	for (Element elem : newsLinks.select("div.pagination.clear-fix").select("li")){
     		if(elem.text().equals("最後一頁") && !elem.select("a[href]").attr("href").equals(""))
     			page = Integer.parseInt(elem.select("a[href]").attr("href").split("page=")[1]);
@@ -31,7 +31,7 @@ public class ChinatimesCrawler extends Crawler {
     	
     	for (Integer i = 1; i <= page; i++){
     		currentPage = url + "?page=" + i.toString();
-    		newsLinks = CrawlerPack.getFromXml(currentPage);
+    		newsLinks = CrawlerPack.start().getFromXml(currentPage);
 			for (Element elem : newsLinks.select("section.np_alllist").select("div.listRight").select("li")) {
 				newsTag = elem.select("div.kindOf").text();
 				addNewsLinkList("http://www.chinatimes.com" + elem.select("a[href]").attr("href"), newsTag, pastday);

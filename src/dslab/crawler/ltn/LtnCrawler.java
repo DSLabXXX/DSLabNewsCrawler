@@ -34,7 +34,7 @@ public class LtnCrawler extends Crawler{
     	for (int i = 0; i < category.length; i++) {
 			urlList = new ArrayList<String>();
 			url = "http://news.ltn.com.tw/newspaper/" + category[i] + "/" + pastday;
-			newsLinks = CrawlerPack.getFromXml(url);
+			newsLinks = CrawlerPack.start().getFromXml(url);
 			//取得須抓取新聞連結之網頁
 			urlList.add(url);
 			for (Element elem : newsLinks.select("div#page.boxTitle.boxText").select("a[href]")) {
@@ -42,7 +42,7 @@ public class LtnCrawler extends Crawler{
 			}
 			//抓取連結
 			for (String urllink : urlList) {
-				newsLinks = CrawlerPack.getFromXml(urllink);
+				newsLinks = CrawlerPack.start().getFromXml(urllink);
 				for (Element elem : newsLinks.select("ul#newslistul.boxTitle").select("li.lipic")) {
 					newsTag = elem.select("span").text();
 					addNewsLinkList("http://news.ltn.com.tw" + elem.select("a[href]").attr("href"), newsTag, pastday);

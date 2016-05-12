@@ -6,12 +6,13 @@ import java.util.Calendar;
 
 import csist.c4isr.common.net.TcpLink;
 import dslab.crawler.apple.AppleCrawler;
-import dslab.crawler.chinatimes.BusinessTimes;
-import dslab.crawler.chinatimes.ChinaElectronicsNews;
+import dslab.crawler.chinatimes.BusinessTimesCrawlwe;
+import dslab.crawler.chinatimes.ChinaElectronicsNewsCrawler;
 import dslab.crawler.chinatimes.ChinatimesCrawler;
 import dslab.crawler.chinatimes.DogCrawler;
 import dslab.crawler.ltn.LtnCrawler;
 import dslab.crawler.ptt.PttGossipingCrawler;
+import dslab.crawler.udn.UdnCrawler;
 
 public class Launcher {
 	
@@ -55,7 +56,7 @@ public class Launcher {
 		chinatimes.processNewsList("./中國時報/");
 	}
 	
-	private static void businesstimes(BusinessTimes businesstimes, String[] dateAry, TcpLink tcp) throws IOException{
+	private static void businesstimes(BusinessTimesCrawlwe businesstimes, String[] dateAry, TcpLink tcp) throws IOException{
 		businesstimes.pastdayOfYear = dateAry[0];
 		businesstimes.pastdayOfMonth = dateAry[1];
 		businesstimes.pastdayOfdate = dateAry[2];
@@ -77,7 +78,7 @@ public class Launcher {
 		dog.processNewsList("./旺報/");
 	}
 	
-	private static void chinaelectrontimes(ChinaElectronicsNews chinaelectrontimes, String[] dateAry, TcpLink tcp) throws IOException{
+	private static void chinaelectrontimes(ChinaElectronicsNewsCrawler chinaelectrontimes, String[] dateAry, TcpLink tcp) throws IOException{
 		chinaelectrontimes.pastdayOfYear = dateAry[0];
 		chinaelectrontimes.pastdayOfMonth = dateAry[1];
 		chinaelectrontimes.pastdayOfdate = dateAry[2];
@@ -86,6 +87,17 @@ public class Launcher {
 		chinaelectrontimes.tcpLink = tcp;
 		chinaelectrontimes.customerRunProcess();
 		chinaelectrontimes.processNewsList("./中時電子報/");
+	}
+	
+	private static void udn(UdnCrawler udn, String[] dateAry, TcpLink tcp) throws IOException{
+		udn.pastdayOfYear = dateAry[0];
+		udn.pastdayOfMonth = dateAry[1];
+		udn.pastdayOfdate = dateAry[2];
+		udn.pastday = pastday;
+		udn.today = today;
+		udn.tcpLink = tcp;
+		udn.customerRunProcess();
+		udn.processNewsList("./聯合報/");
 	}
 	
 	private static void pttgossiping(Integer startIdx) throws IOException{
@@ -125,12 +137,15 @@ public class Launcher {
 //		}
 //		tcp.destroy();
 		
+		
+		//新聞抓取，輸入：起始年月日 ，迄年月日，例如：2010 01 01 20110101
 		AppleCrawler apple = new AppleCrawler();
 		LtnCrawler ltn = new LtnCrawler();
 		ChinatimesCrawler chinatimes = new ChinatimesCrawler();
-		BusinessTimes businesstimes = new BusinessTimes();
+		BusinessTimesCrawlwe businesstimes = new BusinessTimesCrawlwe();
 		DogCrawler dog = new DogCrawler();
-		ChinaElectronicsNews chinaelectrontimes = new ChinaElectronicsNews();
+		ChinaElectronicsNewsCrawler chinaelectrontimes = new ChinaElectronicsNewsCrawler();
+		UdnCrawler udn = new UdnCrawler();
 		
 		String[] dateAry = new String[4];
 		dateProcess(args);
@@ -141,17 +156,18 @@ public class Launcher {
 			dateAry[2] = String.format("%02d", C.get(Calendar.DAY_OF_MONTH));
 			pastday = dateAry[0] + dateAry[1] + dateAry[2];
 			
-			apple(apple, dateAry, tcp);
-			ltn(ltn, dateAry, tcp);
-			chinatimes(chinatimes, dateAry, tcp);
-			businesstimes(businesstimes, dateAry, tcp);
-			dog(dog, dateAry, tcp);
-			chinaelectrontimes(chinaelectrontimes, dateAry, tcp);
+//			apple(apple, dateAry, tcp);
+			udn(udn, dateAry, tcp);
+//			ltn(ltn, dateAry, tcp);
+//			chinatimes(chinatimes, dateAry, tcp);
+//			businesstimes(businesstimes, dateAry, tcp);
+//			dog(dog, dateAry, tcp);
+//			chinaelectrontimes(chinaelectrontimes, dateAry, tcp);
 			
 			C.add(C.DATE, Integer.parseInt("1"));
 		}
 		
-		//Ptt八卦版抓取
+//		//Ptt八卦版抓取，輸入起訖文章編號，例如：0 5000
 //		for(Integer i = Integer.parseInt(args[0]); i <= Integer.parseInt(args[1]); i++){
 //			try {
 //				Thread.sleep(500);
@@ -162,6 +178,6 @@ public class Launcher {
 //			System.out.println("頁數：" + i);
 //		}
 		
-//		System.out.println("抓取完成!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("抓取完成!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	}
 }

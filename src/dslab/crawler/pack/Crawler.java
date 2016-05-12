@@ -102,7 +102,7 @@ public class Crawler {
 			f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
 			try {
 				out = new OutputStreamWriter(new FileOutputStream(f.getAbsolutePath()), "UTF-8");
-				System.out.print(f.getAbsolutePath());
+				System.out.println(f.getAbsolutePath());
 			} catch (Exception e) {
 				newscontent[0] = "---------抓取標題錯誤---------" + new Random().nextInt(10000000);
 				filePath = newscontent[0] + ".txt";
@@ -110,8 +110,7 @@ public class Crawler {
 				out = new OutputStreamWriter(new FileOutputStream(f.getAbsolutePath()), "UTF-8");
 			}
 
-			System.out.println(date);
-			System.out.println(newscontent[0]);
+			System.out.println(date + newscontent[0]);
 
 			// 寫入內容至檔案
 			out.write(newscontent[0]);
@@ -168,7 +167,7 @@ public class Crawler {
 			dir = new File(dirPath);
 			dir.mkdirs();
 
-			Document contain = CrawlerPack.getFromXml(url);
+			Document contain = CrawlerPack.start().getFromXml(url);
 
 			for (int j = 0; j < 5; j++) {
 				if (contain != null) {
@@ -183,7 +182,7 @@ public class Crawler {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				contain = CrawlerPack.getFromXml(url);
+				contain = CrawlerPack.start().getFromXml(url);
 			}
 		}
 		clearList();

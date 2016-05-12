@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import dslab.crawler.pack.Crawler;
+import dslab.crawler.pack.CrawlerPack;
 import dslab.crawler.pack.XTrustProvider;
 
 public class PttGossipingCrawler extends Crawler{
@@ -62,7 +63,7 @@ public class PttGossipingCrawler extends Crawler{
 		XTrustProvider.install();
 
 		url = "https://www.ptt.cc/bbs/Gossiping/index" + startIdx + ".html";
-		newsLinks = PttCrawlerPack.getFromXml(url);
+		newsLinks = CrawlerPack.start().addCookie("over18","1").getFromXml(url);
 		for (Element elem : newsLinks.select("div.r-ent")) {
 			addNewsLinkList("https://www.ptt.cc" + elem.select("a[href]").attr("href"));
 		}
@@ -93,7 +94,7 @@ public class PttGossipingCrawler extends Crawler{
 			dir = new File(dirPath);
 			dir.mkdirs();
 
-			Document contain = PttCrawlerPack.getFromXml(url);
+			Document contain = CrawlerPack.start().addCookie("over18","1").getFromXml(url);
 
 			for (int j = 0; j < 5; j++) {
 				if (contain != null) {
@@ -108,7 +109,7 @@ public class PttGossipingCrawler extends Crawler{
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				contain = PttCrawlerPack.getFromXml(url);
+				contain = CrawlerPack.start().addCookie("over18","1").getFromXml(url);
 			}
 		}
 	}
@@ -172,13 +173,6 @@ public class PttGossipingCrawler extends Crawler{
 				newscontent[5] += "\n";
 			}
 		}
-		
-//		System.out.println(newscontent[0].toString());
-//		System.out.println(newscontent[1].toString());
-//		System.out.println(newscontent[2].toString());
-//		System.out.println(newscontent[3].toString());
-//		System.out.println(newscontent[4].toString());
-//		System.out.println(newscontent[5].toString());
 		
 		return newscontent;
 	}

@@ -1,138 +1,305 @@
-package dslab.crawler.pack;
 /**
- * 爬蟲組合包
+ * Copyright 2015-2016 Abola Lee
  *
- * @author Abola Lee <abola921@gmail.com>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+package dslab.crawler.pack;
+
+import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.vfs2.VFS;
+import org.apache.commons.vfs2.*;
+import org.apache.commons.vfs2.impl.StandardFileSystemManager;
+import org.apache.commons.vfs2.provider.http.HttpFileSystemConfigBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.parser.MyXmlTreeBuilder;
 import org.jsoup.parser.Parser;
+import org.jsoup.parser.PrefixXmlTreeBuilder;
+import org.mozilla.universalchardet.UniversalDetector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.*;
+
 
 public class CrawlerPack {
 
-	/**
-	 * 取得遠端格式為 JSON 的資料
-	 *
-	 * @param url
-	 *            required Apache Common VFS supported file systems
-	 * @return Jsoup Document
-	 * @throws JSONException
-	 */
-	public static org.jsoup.nodes.Document getFromJson(String url) throws JSONException {
-		// 取回資料，並轉化為XML格式
-		String json = getFromRemote(url);
+    static Logger log = LoggerFactory.getLogger(CrawlerPack.class);
 
-		// 將 json 轉化為 xml
-		String xml = jsonToXml(json);
+    static StandardFileSystemManager fileSystem ;
 
-		// Custom code here
+    static{
+        // create a Self-signed Server Certificates
+        // for pass SSL
+        XTrustProvider.install();
 
-		// 轉化為 Jsoup 物件
-		return xmlToJsoupDoc(xml);
-	}
+        try {
+            fileSystem = new StandardFileSystemManager();
+            fileSystem.setCacheStrategy(CacheStrategy.ON_CALL);
+            fileSystem.init();
+        }catch(FileSystemException fse){
+            // ignore
+        }
+    }
 
-	/**
-	 * 取得遠端格式為 XML 的資料
-	 *
-	 * @param url
-	 *            required Apache Common VFS supported file systems
-	 * @return Jsoup Document
-	 */
-	public static org.jsoup.nodes.Document getFromXml(String url) {
-		// 取回資料，並轉化為XML格式
-		String xml = getFromRemote(url);
+    static CrawlerPack defaultCrawler ;
 
-		// Custom code here
+    /**
+     * Create a CrawlerPack instance
+     *
+     * @return CrawlerPack
+     */
+    public static CrawlerPack start(){
+        if (null == defaultCrawler)
+            defaultCrawler = new CrawlerPack();
+        return defaultCrawler;
+    }
 
-		// 轉化為 Jsoup 物件
-		return xmlToJsoupDoc(xml);
-	}
+    private List<Cookie> cookies = new ArrayList<>();
 
-	/**
-	 * HTML 與 XML 處理模式相同
-	 */
-	public static org.jsoup.nodes.Document getFromHtml(String url) {
-		return getFromXml(url);
-	}
 
-	/**
-	 * 將 json 轉為 XML
-	 * 
-	 * @param json
-	 * @return
-	 * @throws JSONException
-	 */
-	public static String jsonToXml(String json) throws JSONException {
-		String xml = "";
-		// 處理直接以陣列開頭的JSON，並指定給予 row 的 tag
-		if ("[".equals(json.substring(0, 1))) {
-			xml = XML.toString(new JSONArray(json), "row");
-		} else {
-			xml = XML.toString(new JSONObject(json));
-		}
+    /**
+     * Creates a cookie with the given name and value.
+     *
+     * @param name    the cookie name
+     * @param value   the cookie value
+     * @return CrawlerPack
+     */
+    public CrawlerPack addCookie(String name, String value){
+        if( null == name ) {
+            log.warn("Cookie name null.");
+            return this;
+        }
 
-		return xml;
-	}
+        cookies.add( new Cookie("", name, value) );
 
-	/**
-	 * 透過 Apache Common VFS 套件 取回遠端的資源
-	 *
-	 * 能使用的協定參考：
-	 * 
-	 * @see "https://commons.apache.org/proper/commons-vfs/filesystems.html"
-	 */
-	public static String getFromRemote(String url) {
-		try {
-			// 透過 Apache VFS 取回指定的遠端資料
-			return IOUtils.toString(VFS.getManager().resolveFile(url).getContent().getInputStream(), "UTF-8");
-			
-		} catch (Exception ex) {
-			if(ex.getMessage().contains("because it is a not a file.") || ex.getMessage().contains("Could not read file")){
-				System.out.println(ex.getMessage());
-				return null;
-			}
-			System.out.println(ex.getMessage());
-//			ex.printStackTrace();
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-//				e.printStackTrace();
-			}
-			return getFromRemote(url);
-		}
-	}
+        return this;
+    }
 
-	// 替換字元：一定要是 a-zA-Z 開頭的組合
-	final static String prefix = "all-lower-case-prefix";
+    /**
+     * Creates a cookie with the given name, value, domain attribute,
+     * path attribute, expiration attribute, and secure attribute
+     *
+     * @param name    the cookie name
+     * @param value   the cookie value
+     * @param domain  the domain this cookie can be sent to
+     * @param path    the path prefix for which this cookie can be sent
+     * @param expires the {@link Date} at which this cookie expires,
+     *                or <tt>null</tt> if the cookie expires at the end
+     *                of the session
+     * @param secure if true this cookie can only be sent over secure
+     * connections
+     *
+     */
+    public CrawlerPack addCookie(String domain, String name, String value,
+                  String path, Date expires, boolean secure) {
+        if( null == name ) {
+            log.warn("Cookie name null.");
+            return this;
+        }
 
-	/**
-	 * 將 XML 轉化為 Jsoup Document 物件
-	 *
-	 * 如果碰到Tag 名稱首字元非 a-zA-Z 的字元，jsoup 會解析為註解 所以必需用騙的先置入 prefix 再改寫xmlParse
-	 * 在回傳時移除prefix
-	 *
-	 */
-	public static org.jsoup.nodes.Document xmlToJsoupDoc(String xml) {		
-		if(xml != null){
-			// Tag 首字元非 a-zA-Z 時轉化為註解的問題
-			xml = xml.replaceAll("<([^A-Za-z\\/][^\\/>]*)>", "<" + prefix.toLowerCase() + "$1>")
-					.replaceAll("<\\/([^A-Za-z\\/][^\\/>]*)>", "</" + prefix.toLowerCase() + "$1>");
+        cookies.add(new Cookie(domain, name, value, path, expires, secure));
+        return this;
+    }
 
-			// 將 xml(html/html5) 轉為 jsoup Document 物件
-			Document jsoupDoc = Jsoup.parse(xml, "", new Parser(new MyXmlTreeBuilder(prefix.toLowerCase())));
+    /**
+     * Return a Cookie array
+     * and auto importing domain and path when domain was empty.
+     *
+     * @param uri required Apache Common VFS supported file systems and response JSON format content.
+     * @return Cookie[]
+     */
+    Cookie[] getCookies(String uri){
+        if( null == cookies || 0 == cookies.size()) return null;
+
+        for(Cookie cookie: cookies){
+
+            if("".equals(cookie.getDomain())){
+                String domain = uri.replaceAll("^.*:\\/\\/([^\\/]+)[\\/]?.*$", "$1");
+//                System.out.println(domain);
+                cookie.setDomain(domain);
+                cookie.setPath("/");
+                cookie.setExpiryDate(null);
+                cookie.setSecure(false);
+            }
+        }
+
+        return cookies.toArray(new Cookie[cookies.size()]);
+    }
+
+    /**
+     * Clear all cookies
+     */
+    void clearCookies(){
+        cookies = new ArrayList<>();
+    }
+
+    public org.jsoup.nodes.Document getFromJson(String uri) throws JSONException{
+
+        String json = getFromRemote(uri);
+
+        String xml  = jsonToXml(json);
+
+        return xmlToJsoupDoc(xml);
+    }
+    
+    public org.jsoup.nodes.Document getFromHtml(String uri){
+        String html = getFromRemote(uri);
+
+        return htmlToJsoupDoc(html);
+    }
+
+    public org.jsoup.nodes.Document getFromXml(String uri){
+    	
+        String xml = getFromRemote(uri);
+
+        return xmlToJsoupDoc(xml);
+    }
+
+    public String jsonToXml(String json) throws JSONException{
+        String xml = "";
+        if ( "[".equals( json.substring(0,1) ) ){
+            xml = XML.toString(new JSONArray(json), "row");
+        }else{
+            xml = XML.toString(new JSONObject(json));
+        }
+
+        return xml;
+    }
+    public String getFromRemote(String uri){
+
+        // clear cache
+        fileSystem.getFilesCache().close();
+
+        String remoteContent ;
+        String remoteEncoding = "utf-8";
+
+        log.debug("Loading remote URI:" + uri);
+        FileContent fileContent ;
+
+        try {
+            // set cookie if cookies set
+            if (0 < this.cookies.size()) {
+                FileSystemOptions fsOptions = new FileSystemOptions();
+                HttpFileSystemConfigBuilder.getInstance().setCookies(fsOptions, getCookies(uri));
+                fileContent = fileSystem.resolveFile(uri, fsOptions).getContent();
+            } else
+                fileContent = fileSystem.resolveFile(uri).getContent();
+
+            // 2016-03-22 only pure http/https auto detect encoding
+            if ("http".equalsIgnoreCase(uri.substring(0, 4))) {
+                fileContent.getSize();  // pass a bug {@link https://issues.apache.org/jira/browse/VFS-427}
+                remoteEncoding = fileContent.getContentInfo().getContentEncoding();
+            }
+
+
+            if (null == remoteEncoding) remoteEncoding = "utf-8";
+
+            if (!"utf".equalsIgnoreCase(remoteEncoding.substring(0, 3))) {
+                log.debug("remote content encoding: " + remoteEncoding);
+
+                // force charset encoding if setRemoteEncoding set
+                if (!"utf".equalsIgnoreCase(encoding.substring(0, 3))) {
+                    remoteEncoding = encoding;
+                } else {
+                    // auto detecting encoding
+                    remoteEncoding = detectCharset(IOUtils.toByteArray(fileContent.getInputStream()));
+                    log.info("real encoding: " + remoteEncoding);
+                }
+            }
+
+            // 2016-02-29 fixed
+            remoteContent = IOUtils.toString(fileContent.getInputStream(), remoteEncoding);
+
+        } catch(FileSystemException fse){
+            log.warn(fse.getMessage());
+            remoteContent =null;
+        }catch(IOException ioe){
+            // return empty
+            log.warn(ioe.getMessage());
+            remoteContent =null;
+        }catch(StringIndexOutOfBoundsException stre){
+            log.warn("uri: " + uri );
+            log.warn(stre.getMessage());
+            remoteContent =null;
+        }
+
+        clearCookies();
+
+        // any exception will return "null"
+        return remoteContent;
+    }
+
+    public org.jsoup.nodes.Document htmlToJsoupDoc(String html){
+
+        Document jsoupDoc = Jsoup.parse(html, "UTF-8", Parser.htmlParser() );
+        jsoupDoc.charset(StandardCharsets.UTF_8);
+
+        return jsoupDoc;
+    }
+
+    final static String prefix = "all-lower-case-prefix";
+
+    public org.jsoup.nodes.Document xmlToJsoupDoc(String xml){
+		if (xml != null) {
+			xml = xml.replaceAll("<([^A-Za-z\\/! ][^\\/>]*)>", "<" + prefix.toLowerCase() + "$1>")
+					.replaceAll("<\\/([^A-Za-z\\/ ][^\\/>]*)>", "</" + prefix.toLowerCase() + "$1>");
+
+			Document jsoupDoc = Jsoup.parse(xml, "", new Parser(new PrefixXmlTreeBuilder(prefix.toLowerCase())));
 			jsoupDoc.charset(StandardCharsets.UTF_8);
 
 			return jsoupDoc;
-		}
-		return null;
-	}
+		} else
+			return null;
+    }
+
+    private String encoding = "utf-8";
+
+    public CrawlerPack setRemoteEncoding(String encoding){
+        this.encoding = encoding;
+        return this;
+    }
+
+    private String detectCharset(byte[] content){
+        return detectCharset(content, 0);
+    }
+
+    final Integer detectBuffer = 1000;
+
+    /**
+     * Detecting real content encoding
+     * @param content
+     * @param offset
+     * @return real charset encoding
+     */
+    private String detectCharset(byte[] content, Integer offset){
+        log.debug("offset: " + offset);
+
+        // detect failed
+        if( offset > content.length ) return null;
+
+        UniversalDetector detector = new UniversalDetector(null);
+        detector.handleData(content, offset, content.length - offset > detectBuffer ? detectBuffer : content.length - offset);
+        detector.dataEnd();
+
+        String detectEncoding = detector.getDetectedCharset();
+
+        return null==detectEncoding?detectCharset(content,offset+detectBuffer):detectEncoding;
+    }
+
 }
