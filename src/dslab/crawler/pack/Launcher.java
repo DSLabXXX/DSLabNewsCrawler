@@ -156,13 +156,13 @@ public class Launcher {
 			dateAry[2] = String.format("%02d", C.get(Calendar.DAY_OF_MONTH));
 			pastday = dateAry[0] + dateAry[1] + dateAry[2];
 			
-//			apple(apple, dateAry, tcp);
-			udn(udn, dateAry, tcp);
-//			ltn(ltn, dateAry, tcp);
-//			chinatimes(chinatimes, dateAry, tcp);
-//			businesstimes(businesstimes, dateAry, tcp);
-//			dog(dog, dateAry, tcp);
-//			chinaelectrontimes(chinaelectrontimes, dateAry, tcp);
+			apple(apple, dateAry, tcp);
+//			udn(udn, dateAry, tcp);
+			ltn(ltn, dateAry, tcp);
+			chinatimes(chinatimes, dateAry, tcp);
+			businesstimes(businesstimes, dateAry, tcp);
+			dog(dog, dateAry, tcp);
+			chinaelectrontimes(chinaelectrontimes, dateAry, tcp);
 			
 			C.add(C.DATE, Integer.parseInt("1"));
 		}
