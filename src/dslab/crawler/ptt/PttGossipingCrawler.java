@@ -20,17 +20,6 @@ public class PttGossipingCrawler extends Crawler{
 		processNewsContain(commentNewsParseProcess(contain), date, dirPath);
 	}
 	
-	/**
-	 * ¿x¶s∑sªD§∫Æe¶‹txt¿…°A∏ÙÆ|°G./§È¥¡/§¿√˛/§È¥¡+∑sªD¶W∫Ÿ.txt
-	 * 
-	 * @param newscontent
-	 *            ∑sªD§∫Æe
-	 * @param date
-	 *            ∑sªD§È¥¡
-	 * @param dirPath
-	 *            ¿x¶s∏ÙÆ|
-	 * @throws IOException
-	 */
 	@Override
 	public void processNewsContain(String[] newscontent, String date, String dirPath) throws IOException {
 
@@ -38,9 +27,8 @@ public class PttGossipingCrawler extends Crawler{
 		String filePath = null;
 		OutputStream out = null;
 		
-		// ´ÿ¿…Æ◊¶W∫Ÿ(Æ…∂°+∑sªDº–√D)
 		if(newscontent[1].equals("")){
-			newscontent[1] = "---------µL™kßÏ®˙º–√D---------" + new Random().nextInt(10000000);
+			newscontent[1] = "---------ÁÑ°Ê≥ïÊäìÂèñÊ®ôÈ°å---------" + new Random().nextInt(10000000);
 			filePath = newscontent[1] + ".txt";
 		}
 		else{
@@ -48,7 +36,6 @@ public class PttGossipingCrawler extends Crawler{
 			f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
 			out = new FileOutputStream(f.getAbsolutePath());
 
-			// ºg§J§∫Æe¶‹¿…Æ◊
 			for (int i = 0; i < newscontent.length; i++) {
 				out.write(newscontent[i].getBytes());
 				out.write("\n".getBytes());
@@ -69,13 +56,6 @@ public class PttGossipingCrawler extends Crawler{
 		}
 	}
 	
-	/**
-	 * ≥B≤z∑sªD≥sµ≤≤M≥Ê
-	 * 
-	 * @param newsName
-	 *            ∑sªD¶W∫Ÿ
-	 * @throws IOException
-	 */
 	@Override
 	public void processNewsList(String newsName) throws IOException {
 
@@ -87,7 +67,6 @@ public class PttGossipingCrawler extends Crawler{
 
 		for (int i = 0; i < newsLinkList.size(); i++) {
 
-			// ´ÿ∏ÙÆ|∏ÍÆ∆ß®(Æ…∂°/∑sªD§¿√˛)
 			url = newsLinkList.get(i);
 
 			dirPath = newsName;
@@ -113,31 +92,23 @@ public class PttGossipingCrawler extends Crawler{
 			}
 		}
 	}
-		
-	/**
-	 * §@ØÎ∑sªD™¶¬Œ≥B≤z
-	 * 
-	 * @param elem
-	 * @return
-	 */
+	
 	private String[] commentNewsParseProcess(Document contain){
 		String[] newscontent = {"","","","","",""};
 		String[] tmp;
 		
 		for (Element elem : contain.select("div#main-container").select("div#main-content.bbs-screen.bbs-content")) {
-			// ∫I®˙ß@™Ã°Bº–√D°B§È¥¡
 			for(Element elem2 : elem.select("div.article-metaline").select("span.article-meta-tag")){
-				if(elem2.text().equals("ß@™Ã"))
+				if(elem2.text().equals("‰ΩúËÄÖ"))
 					newscontent[0] = elem2.parent().select("span.article-meta-value").text();
-				else if(elem2.text().equals("º–√D"))
+				else if(elem2.text().equals("Ê®ôÈ°å"))
 					newscontent[1] = elem2.parent().select("span.article-meta-value").text();
-				else if(elem2.text().equals("Æ…∂°")){
+				else if(elem2.text().equals("ÊôÇÈñì")){
 					newscontent[2] = dateProcess(elem2.parent().select("span.article-meta-value").text());
 				}
 			}
-			// ∫I®˙IP
 			try {
-				newscontent[3] = elem.ownText().split("®”¶€: ")[1];
+				newscontent[3] = elem.ownText().split("‰æÜËá™: ")[1];
 			} catch (Exception e) {
 //				e.printStackTrace();
 				try {
@@ -146,23 +117,19 @@ public class PttGossipingCrawler extends Crawler{
 				} catch (Exception e1) {
 //					e1.printStackTrace();
 					try {
-						newscontent[3] = elem.ownText().split("°ª From: ")[1];						
+						newscontent[3] = elem.ownText().split("‚óÜ From: ")[1];						
 					} catch (Exception e2) {
-//						e2.printStackTrace();
-						newscontent[3] = "µL™k∫I®˙IP";
+						newscontent[3] = "ÁÑ°Ê≥ïÊà™ÂèñIP";
 					}
 				}
 			}
 			
-			// ∫I®˙§∫§Â
 			try {
 				newscontent[4] = elem.html().split("</div>")[4].split("<div")[0] + "\n";
 			} catch (Exception e) {
-//				e.printStackTrace();
 				newscontent[4] = "";
 			}
 			
-			// ∫I®˙±¿§Â
 			for(Element elem2 : elem.select("div.push")){
 				for(Element elem3 : elem2.select("span")){
 					if(elem3.className().equals("push-ipdatetime"))
@@ -228,8 +195,7 @@ public class PttGossipingCrawler extends Crawler{
 	    if (strLen < strLength) {
 	        while (strLen < strLength) {
 	            StringBuffer sb = new StringBuffer();
-	            sb.append("0").append(str);// •™∏…0
-	            // sb.append(str).append("0");//•k∏…0
+	            sb.append("0").append(str);
 	            str = sb.toString();
 	            strLen = str.length();
 	        }

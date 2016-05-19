@@ -21,11 +21,10 @@ public class ChinatimesCrawler extends Crawler {
 		int page = 0;
 		String currentPage;
 		
-		//§ä¥X³Ì«á¤@­¶­¶¼Æ
 		setUrl();
     	newsLinks = CrawlerPack.start().getFromXml(url);
     	for (Element elem : newsLinks.select("div.pagination.clear-fix").select("li")){
-    		if(elem.text().equals("³Ì«á¤@­¶") && !elem.select("a[href]").attr("href").equals(""))
+    		if(elem.text().equals("æœ€å¾Œä¸€é ") && !elem.select("a[href]").attr("href").equals(""))
     			page = Integer.parseInt(elem.select("a[href]").attr("href").split("page=")[1]);
     	}
     	
@@ -43,17 +42,10 @@ public class ChinatimesCrawler extends Crawler {
 		url = "http://www.chinatimes.com/history-by-date/" + pastdayOfYear + "-" + pastdayOfMonth + "-" + pastdayOfdate + "-2601";
 	}
 	
-	/**
-	 * ¤@¯ë·s»Dª¦ÂÎ³B²z
-	 * 
-	 * @param elem
-	 * @return
-	 */
 	private String[] commentNewsParseProcess(Document contain){
 		String[] newscontent = {"",""};
 		setSelectElement();
 		for (Element elem : contain.select(elemString)) {
-			// ºI¨ú·s»D¼ĞÃD¡B¤º®e
 			newscontent[0] = elem.select("header").select("h1").text();
 			newscontent[1] = elem.select("article.clear-fix").select("p").text();
 		}

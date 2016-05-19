@@ -12,9 +12,9 @@ public class AppleCrawler extends Crawler{
 	
 	@Override
 	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException{
-		if (tag.equals("¦a²£µJÂI"))
+		if (tag.equals("åœ°ç”¢ç„¦é»ž"))
 			processNewsContain(houseNewsParseProcess(contain), date, dirPath);
-		else if (tag.equals("©Ð²£¤ý") || tag.equals("®a©~¤ý") || tag.equals("»¨¦v¤ý") || tag.equals("¦a²£¤ý"))
+		else if (tag.equals("æˆ¿ç”¢çŽ‹") || tag.equals("å®¶å±…çŽ‹") || tag.equals("è±ªå®…çŽ‹") || tag.equals("åœ°ç”¢çŽ‹"))
 			processNewsContain(housekingNewsParseProcess(contain), date, dirPath);
 		else
 			processNewsContain(commentNewsParseProcess(contain), date, dirPath);
@@ -35,52 +35,31 @@ public class AppleCrawler extends Crawler{
 			}
 		}
 	}
-	
-	/**
-	 * ¤@¯ë·s»Dª¦ÂÎ³B²z
-	 * 
-	 * @param elem
-	 * @return
-	 */
+
 	private String[] commentNewsParseProcess(Document contain){
 		String[] newscontent = {"",""};
 		
 		for (Element elem : contain.select("article#maincontent.vertebrae")) {
-			// ºI¨ú·s»D¼ÐÃD¡B¤º®e
 			newscontent[0] = elem.select("header").select("hgroup").text();
 			newscontent[1] = elem.select("p").text();
 		}
 		return newscontent;
 	}
 	
-	/**
-	 * ©Ð²£¤ý¡B®a©~¤ý¡B»¨¦v¤ý¡B¦a²£¤ý·s»Dª¦ÂÎ³B²z
-	 * 
-	 * @param elem
-	 * @return
-	 */
 	private String[] housekingNewsParseProcess(Document contain){
 		String[] newscontent = {"",""};
 		
 		for (Element elem : contain.select("article#maincontent.vertebrae")) {
-			// ºI¨ú·s»D¼ÐÃD¡B¤º®e
 			newscontent[0] = elem.select("div.ncbox_cont").select("h1").text();
 			newscontent[1] = elem.select("div.articulum").select("p").text();
 		}
 		return newscontent;
 	}
 	
-	/**
-	 * ©Ð²£·s»Dª¦ÂÎ³B²z
-	 * 
-	 * @param elem
-	 * @return
-	 */
 	private String[] houseNewsParseProcess(Document contain){
 		String[] newscontent = {"",""};
 		
 		for (Element elem : contain.select("article#maincontent.vertebrae")) {
-			// ºI¨ú·s»D¼ÐÃD¡B¤º®e
 			newscontent[0] = elem.select("div.ncbox_cont").select("h1").text();
 			newscontent[1] = elem.select("p").text();
 		}

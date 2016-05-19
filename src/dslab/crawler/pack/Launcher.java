@@ -31,7 +31,7 @@ public class Launcher {
 		apple.today = today;
 		apple.tcpLink = tcp;
 		apple.customerRunProcess();
-		apple.processNewsList("./Ä«ªG¤é³ø/");
+		apple.processNewsList("./è˜‹æœæ—¥å ±/");
 	}
 	
 	private static void ltn(LtnCrawler ltn, String[] dateAry, TcpLink tcp) throws IOException{
@@ -42,7 +42,7 @@ public class Launcher {
 		ltn.today = today;
 		ltn.tcpLink = tcp;
 		ltn.customerRunProcess();
-		ltn.processNewsList("./¦Û¥Ñ®É³ø/");
+		ltn.processNewsList("./è‡ªç”±æ™‚å ±/");
 	}
 	
 	private static void chinatimes(ChinatimesCrawler chinatimes, String[] dateAry, TcpLink tcp) throws IOException{
@@ -53,7 +53,7 @@ public class Launcher {
 		chinatimes.today = today;
 		chinatimes.tcpLink = tcp;
 		chinatimes.customerRunProcess();
-		chinatimes.processNewsList("./¤¤°ê®É³ø/");
+		chinatimes.processNewsList("./ä¸­åœ‹æ™‚å ±/");
 	}
 	
 	private static void businesstimes(BusinessTimesCrawlwe businesstimes, String[] dateAry, TcpLink tcp) throws IOException{
@@ -64,7 +64,7 @@ public class Launcher {
 		businesstimes.today = today;
 		businesstimes.tcpLink = tcp;
 		businesstimes.customerRunProcess();
-		businesstimes.processNewsList("./¤u°Ó®É³ø/");
+		businesstimes.processNewsList("./å·¥å•†æ™‚å ±/");
 	}
 	
 	private static void dog(DogCrawler dog, String[] dateAry, TcpLink tcp) throws IOException{
@@ -75,7 +75,7 @@ public class Launcher {
 		dog.today = today;
 		dog.tcpLink = tcp;
 		dog.customerRunProcess();
-		dog.processNewsList("./©ô³ø/");
+		dog.processNewsList("./æ—ºå ±/");
 	}
 	
 	private static void chinaelectrontimes(ChinaElectronicsNewsCrawler chinaelectrontimes, String[] dateAry, TcpLink tcp) throws IOException{
@@ -86,7 +86,7 @@ public class Launcher {
 		chinaelectrontimes.today = today;
 		chinaelectrontimes.tcpLink = tcp;
 		chinaelectrontimes.customerRunProcess();
-		chinaelectrontimes.processNewsList("./¤¤®É¹q¤l³ø/");
+		chinaelectrontimes.processNewsList("./ä¸­æ™‚é›»å­å ±/");
 	}
 	
 	private static void udn(UdnCrawler udn, String[] dateAry, TcpLink tcp) throws IOException{
@@ -97,7 +97,7 @@ public class Launcher {
 		udn.today = today;
 		udn.tcpLink = tcp;
 		udn.customerRunProcess();
-		udn.processNewsList("./Áp¦X³ø/");
+		udn.processNewsList("./è¯åˆå ±/");
 	}
 	
 	private static void pttgossiping(Integer startIdx) throws IOException{
@@ -106,10 +106,7 @@ public class Launcher {
 		ptt.run();
 		ptt.processNewsList("./PttGossiping/");
 	}
-	
-	/**
-	 * ¤é´ÁÅÜ¼Æ«Ø¥ß
-	 */
+
 	private static void dateProcess(String[] args) {
 		pastdayOfYear = args[0];
 		pastdayOfMonth = args[1];
@@ -138,7 +135,6 @@ public class Launcher {
 //		tcp.destroy();
 		
 		
-		//·s»D§ì¨ú¡A¿é¤J¡G°_©l¦~¤ë¤é ¡A¨´¦~¤ë¤é¡A¨Ò¦p¡G2010 01 01 20110101
 		AppleCrawler apple = new AppleCrawler();
 		LtnCrawler ltn = new LtnCrawler();
 		ChinatimesCrawler chinatimes = new ChinatimesCrawler();
@@ -167,7 +163,6 @@ public class Launcher {
 			C.add(C.DATE, Integer.parseInt("1"));
 		}
 		
-//		//Ptt¤K¨öª©§ì¨ú¡A¿é¤J°_°W¤å³¹½s¸¹¡A¨Ò¦p¡G0 5000
 //		for(Integer i = Integer.parseInt(args[0]); i <= Integer.parseInt(args[1]); i++){
 //			try {
 //				Thread.sleep(500);
@@ -175,9 +170,9 @@ public class Launcher {
 //				e.printStackTrace();
 //			}
 //			pttgossiping(i);
-//			System.out.println("­¶¼Æ¡G" + i);
+//			System.out.println("é æ•¸" + i);
 //		}
 		
-		System.out.println("§ì¨ú§¹¦¨!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println("æŠ“å–å®Œæˆ!!!!!!");
 	}
 }

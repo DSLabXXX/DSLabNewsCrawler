@@ -13,13 +13,13 @@ public class LtnCrawler extends Crawler{
 	
 	@Override
 	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException{
-		if (tag.equals("ªÀ½×") || tag.equals("¦Û¥Ñ¼s³õ") || tag.equals("¦Û¥Ñ½Í"))
+		if (tag.equals("ç¤¾è«–") || tag.equals("è‡ªç”±å»£å ´") || tag.equals("è‡ªç”±è«‡"))
 			processNewsContain(editorialNewsParseProcess(contain), date, dirPath);
-		else if (tag.equals("¼vµøµJÂI"))
+		else if (tag.equals("å½±è¦–ç„¦é»"))
 			processNewsContain(entertainmentNewsParseProcess(contain), date, dirPath);
-		else if (tag.equals("Åé¨|·s»D") || tag.equals("¹B°Ê±m¨é"))
+		else if (tag.equals("é«”è‚²æ–°è") || tag.equals("é‹å‹•å½©å·"))
 			processNewsContain(sportNewsParseProcess(contain), date, dirPath);
-		else if (tag.equals("ÃôÃò¶°"))
+		else if (tag.equals("é—é˜é›†"))
 			processNewsContain(talkNewsParseProcess(contain), date, dirPath);
 		else
 			processNewsContain(commentNewsParseProcess(contain), date, dirPath);
@@ -27,7 +27,6 @@ public class LtnCrawler extends Crawler{
 	
 	@Override
 	public void customerRunProcess(){
-		//·s»D¤ÀÃş
 		String[] category = {"focus", "politics", "society", "local", "life", "opinion", "world", "business", "sports", "entertainment", "consumer", "supplement"};
 		ArrayList<String> urlList = new ArrayList<String>();
 		
@@ -35,12 +34,10 @@ public class LtnCrawler extends Crawler{
 			urlList = new ArrayList<String>();
 			url = "http://news.ltn.com.tw/newspaper/" + category[i] + "/" + pastday;
 			newsLinks = CrawlerPack.start().getFromXml(url);
-			//¨ú±o¶·§ì¨ú·s»D³sµ²¤§ºô­¶
 			urlList.add(url);
 			for (Element elem : newsLinks.select("div#page.boxTitle.boxText").select("a[href]")) {
 				urlList.add("http://news.ltn.com.tw" + elem.attr("href"));
 			}
-			//§ì¨ú³sµ²
 			for (String urllink : urlList) {
 				newsLinks = CrawlerPack.start().getFromXml(urllink);
 				for (Element elem : newsLinks.select("ul#newslistul.boxTitle").select("li.lipic")) {
@@ -52,7 +49,7 @@ public class LtnCrawler extends Crawler{
 	}
 	
 	/**
-	 * ¤@¯ë·s»Dª¦ÂÎ³B²z
+	 * ï¿½@ï¿½ï¿½sï¿½Dï¿½ï¿½ï¿½Î³Bï¿½z
 	 * 
 	 * @param elem
 	 * @return
@@ -62,7 +59,7 @@ public class LtnCrawler extends Crawler{
 		String[] newscontent = {"",""};
 		
 		for (Element elem : contain.select("div.content")) {
-			// ºI¨ú·s»D¼ĞÃD¡B¤º®e
+			// ï¿½Iï¿½ï¿½sï¿½Dï¿½ï¿½ï¿½Dï¿½Bï¿½ï¿½ï¿½e
 			newscontent[0] = elem.select("h1").text();
 			for (Element elem2 : elem.select("div#newstext.text.boxTitle")) {
 				newscontent[1] += elem2.select("p").text();
@@ -72,7 +69,7 @@ public class LtnCrawler extends Crawler{
 	}
 	
 	/**
-	 * ¼vµøµJÂI·s»Dª¦ÂÎ³B²z
+	 * ï¿½vï¿½ï¿½Jï¿½Iï¿½sï¿½Dï¿½ï¿½ï¿½Î³Bï¿½z
 	 * 
 	 * @param elem
 	 * @return
@@ -81,7 +78,7 @@ public class LtnCrawler extends Crawler{
 		String[] newscontent = {"",""};
 		
 		for (Element elem : contain.select("div.content").select("div.news_content")) {
-			// ºI¨ú·s»D¼ĞÃD¡B¤º®e
+			// ï¿½Iï¿½ï¿½sï¿½Dï¿½ï¿½ï¿½Dï¿½Bï¿½ï¿½ï¿½e
 			newscontent[0] = elem.select("h1").text();
 			newscontent[1] += elem.select("p").text();
 		}
@@ -89,7 +86,7 @@ public class LtnCrawler extends Crawler{
 	}
 	
 	/**
-	 * Åé¨|·s»D¡B¹B°Ê±m¨÷ª¦ÂÎ³B²z
+	 * ï¿½ï¿½|ï¿½sï¿½Dï¿½Bï¿½Bï¿½Ê±mï¿½ï¿½ï¿½ï¿½ï¿½Î³Bï¿½z
 	 * 
 	 * @param elem
 	 * @return
@@ -98,7 +95,7 @@ public class LtnCrawler extends Crawler{
 		String[] newscontent = {"",""};
 		
 		for (Element elem : contain.select("div.content").select("div.news_content")) {
-			// ºI¨ú·s»D¼ĞÃD¡B¤º®e
+			// ï¿½Iï¿½ï¿½sï¿½Dï¿½ï¿½ï¿½Dï¿½Bï¿½ï¿½ï¿½e
 			newscontent[0] = elem.select("div.Btitle").text();
 			newscontent[1] += elem.select("p").text();
 		}
@@ -106,7 +103,7 @@ public class LtnCrawler extends Crawler{
 	}
 	
 	/**
-	 * ªÀ½×¡B¦Û¥Ñ¼s³õ¡B¦Û¥Ñ½Í·s»Dª¦ÂÎ³B²z
+	 * ï¿½ï¿½ï¿½×¡Bï¿½Û¥Ñ¼sï¿½ï¿½ï¿½Bï¿½Û¥Ñ½Í·sï¿½Dï¿½ï¿½ï¿½Î³Bï¿½z
 	 * 
 	 * @param elem
 	 * @return
@@ -115,7 +112,7 @@ public class LtnCrawler extends Crawler{
 		String[] newscontent = {"",""};
 		
 		for (Element elem : contain.select("div.content.page-name")) {
-			// ºI¨ú·s»D¼ĞÃD¡B¤º®e
+			// ï¿½Iï¿½ï¿½sï¿½Dï¿½ï¿½ï¿½Dï¿½Bï¿½ï¿½ï¿½e
 			newscontent[0] = elem.select("h2").text();
 			for (Element elem2 : elem.select("div.cont")) {
 				newscontent[1] += elem2.select("p").text();
@@ -128,7 +125,7 @@ public class LtnCrawler extends Crawler{
 	}
 	
 	/**
-	 * ÃôÃò¶°·s»Dª¦ÂÎ³B²z
+	 * ï¿½ï¿½ï¿½ò¶°·sï¿½Dï¿½ï¿½ï¿½Î³Bï¿½z
 	 * 
 	 * @param elem
 	 * @return
@@ -137,7 +134,7 @@ public class LtnCrawler extends Crawler{
 		String[] newscontent = {"",""};
 		
 		for (Element elem : contain.select("div#rightmain.rightmain_c").select("div.content.page-name")) {
-			// ºI¨ú·s»D¼ĞÃD¡B¤º®e
+			// ï¿½Iï¿½ï¿½sï¿½Dï¿½ï¿½ï¿½Dï¿½Bï¿½ï¿½ï¿½e
 			newscontent[0] = elem.select("h2").text();
 			for (Element elem2 : elem.select("div.cont")) {
 				newscontent[1] += elem2.select("p").text();

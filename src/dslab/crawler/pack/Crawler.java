@@ -29,16 +29,6 @@ public class Crawler {
 	public Document newsLinks;
 	public TcpLink tcpLink;
 
-	/**
-	 * ¥[¤J·s»D³sµ²¦ê¦C
-	 * 
-	 * @param url
-	 *            ·s»Dºô§}
-	 * @param newsTag
-	 *            ·s»D¤ÀÃş
-	 * @param pastday
-	 *            ·s»D¤é´Á
-	 */
 	public void addNewsLinkList(String url, String newsTag, String pastday) {
 		String[] link = new String[3];
 		link[0] = newsTag;
@@ -76,26 +66,14 @@ public class Crawler {
 		tcpLink.writeBytes(newscontent[1].getBytes(), "UTF-8");
 	}
 	
-	/**
-	 * Àx¦s·s»D¤º®e¦ÜtxtÀÉ¡A¸ô®|¡G./¤é´Á/¤ÀÃş/¤é´Á+·s»D¦WºÙ.txt
-	 * 
-	 * @param newscontent
-	 *            ·s»D¤º®e
-	 * @param date
-	 *            ·s»D¤é´Á
-	 * @param dirPath
-	 *            Àx¦s¸ô®|
-	 * @throws IOException
-	 */
 	private void saveNewsToFile(String[] newscontent, String date, String dirPath) throws IOException{
 		
 		File f = null;
 		String filePath = null;
 		OutputStreamWriter out = null;
 
-		// «ØÀÉ®×¦WºÙ(®É¶¡+·s»D¼ĞÃD)
 		if (newscontent[0].equals("")) {
-			newscontent[0] = "---------§ì¨ú¼ĞÃD¬°ªÅ---------" + new Random().nextInt(10000000);
+			newscontent[0] = "---------æŠ“å–æ¨™é¡Œç‚ºç©º---------" + new Random().nextInt(10000000);
 			filePath = newscontent[0] + ".txt";
 		} else {
 			filePath = date + newscontent[0] + ".txt";
@@ -104,7 +82,7 @@ public class Crawler {
 				out = new OutputStreamWriter(new FileOutputStream(f.getAbsolutePath()), "UTF-8");
 				System.out.println(f.getAbsolutePath());
 			} catch (Exception e) {
-				newscontent[0] = "---------§ì¨ú¼ĞÃD¿ù»~---------" + new Random().nextInt(10000000);
+				newscontent[0] = "---------æŠ“å–æ¨™é¡ŒéŒ¯èª¤~---------" + new Random().nextInt(10000000);
 				filePath = newscontent[0] + ".txt";
 				f = new File(dirPath + "/" + filePath);
 				out = new OutputStreamWriter(new FileOutputStream(f.getAbsolutePath()), "UTF-8");
@@ -112,7 +90,6 @@ public class Crawler {
 
 			System.out.println(date + newscontent[0]);
 
-			// ¼g¤J¤º®e¦ÜÀÉ®×
 			out.write(newscontent[0]);
 			out.write("\n");
 			out.write(newscontent[1]);
@@ -120,34 +97,16 @@ public class Crawler {
 		}
 	}
 
-	/**
-	 * Âà´«¥¢±Ñ³B²z
-	 * 
-	 * @param dirPath
-	 *            Àx¦s¸ô®|
-	 * @param num
-	 *            ¿ù»~½s¸¹
-	 * @param url
-	 *            ·s»Dºô§}
-	 * @throws IOException
-	 */
 	public void transferFail(String dirPath, int num, String url) throws IOException {
 		File f = null;
 		OutputStream out = null;
-		System.err.println("Âà´«¥¢±Ñ");
-		f = new File(dirPath + "/Âà´«¥¢±Ñ" + num);
+		System.err.println("è½‰æ›å¤±æ•—");
+		f = new File(dirPath + "/è½‰æ›å¤±æ•—" + num);
 		out = new FileOutputStream(f.getAbsolutePath());
 		out.write(url.getBytes());
 		out.close();
 	}
 
-	/**
-	 * ³B²z·s»D³sµ²²M³æ
-	 * 
-	 * @param newsName
-	 *            ·s»D¦WºÙ
-	 * @throws IOException
-	 */
 	public void processNewsList(String newsName) throws IOException {
 
 		String dirPath = null;
@@ -158,7 +117,6 @@ public class Crawler {
 
 		for (int i = 0; i < newsTagLinkList.size(); i++) {
 
-			// «Ø¸ô®|¸ê®Æ§¨(®É¶¡/·s»D¤ÀÃş)
 			tag = newsTagLinkList.get(i)[0];
 			url = newsTagLinkList.get(i)[1].toString();
 			date = newsTagLinkList.get(i)[2].toString();
@@ -188,24 +146,11 @@ public class Crawler {
 		clearList();
 	}
 
-	/**
-	 * «È»s¤Æ³B²z³sµ²
-	 * 
-	 * @param tag
-	 * @param url
-	 * @param date
-	 * @param dirPath
-	 * @param tmp
-	 * @throws IOException
-	 */
 	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain)
 			throws IOException {
 
 	}
 
-	/**
-	 * «È»s¤Æ°õ¦æ
-	 */
 	public void customerRunProcess() {
 
 	}
