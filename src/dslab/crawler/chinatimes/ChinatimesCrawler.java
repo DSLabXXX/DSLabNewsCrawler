@@ -12,7 +12,6 @@ public class ChinatimesCrawler extends Crawler {
 	
 	@Override
 	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException{
-		
 		processNewsContain(commentNewsParseProcess(contain), date, dirPath);
 	}
 	

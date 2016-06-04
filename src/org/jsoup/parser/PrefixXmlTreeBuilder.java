@@ -56,6 +56,8 @@ public class PrefixXmlTreeBuilder extends XmlTreeBuilder {
     }
 
     Element insert(StartTag startTag) {
+    	if(startTag.name().replace(this.prefix,"").isEmpty())
+    		startTag.tagName = startTag.tagName + "empty";
         // remove prefix
         Tag tag = Tag.valueOf(startTag.name().replace(this.prefix,""));
         Element el = new Element(tag, this.baseUri, startTag.attributes);
