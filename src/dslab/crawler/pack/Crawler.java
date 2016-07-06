@@ -2,12 +2,16 @@ package dslab.crawler.pack;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 
 public class Crawler {
@@ -22,8 +26,9 @@ public class Crawler {
 	public String pastdayOfdate;
 	public String pastday;
 	public String url;
-	public String newsTag;
+	public String newsCategory;
 	public String elemString;
+	public String dirPath;
 	public Document newsLinks;
 
 	public void addNewsLinkList(String url, String newsTag, String pastday) {
@@ -50,56 +55,82 @@ public class Crawler {
 		newsTagLinkList = new ArrayList<String[]>();
 	}
 
-
-	public void processNewsContain(String[] newscontent, String date, String dirPath) throws IOException {
-		saveNewsToFile(newscontent, date, dirPath);
+//	public void processNewsContain(String[] newscontent, String date, String dirPath) throws IOException {
+//		saveNewsToFile(newscontent, date, dirPath);
 //		sentNewsToStream(newscontent);
+//	}
+	
+	public void processNewsContain(String[] newscontent) throws IOException, JSONException {
+		String filePath =  newscontent[1] + newscontent[4];
+		if (newscontent[4].equals("")) {
+			filePath =  newscontent[1] + "---------No title---------" + new Random().nextInt(10000000) + ".txt";
+			saveNewsFile(createJsonFile(newscontent), dirPath + "/" + filePath);
+		} else {
+			filePath.replaceAll("[\\\\/:*?\"<>| ]", "-");
+			try {
+				saveNewsFile(createJsonFile(newscontent), dirPath + "/" + filePath);
+			} catch (IOException e) {
+				filePath = newscontent[1] + "---------Get Title Error---------" + new Random().nextInt(10000000) + ".txt";
+				saveNewsFile(createJsonFile(newscontent), dirPath + "/" + filePath);
+				e.printStackTrace();
+			}
+		}
 	}
 	
-	private void saveNewsToFile(String[] newscontent, String date, String dirPath) throws IOException{
-		
-		File f = null;
-		String filePath = null;
-		OutputStreamWriter out = null;
-
-		if (newscontent[0].equals("")) {
-			newscontent[0] = "---------抓取標題為空---------" + new Random().nextInt(10000000);
-			filePath = newscontent[0] + ".txt";
-		} else {
-			filePath = date + newscontent[0] + ".txt";
-			f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
-			try {
-				out = new OutputStreamWriter(new FileOutputStream(f.getAbsolutePath()), "UTF-8");
-				System.out.println(f.getAbsolutePath());
-			} catch (Exception e) {
-				newscontent[0] = "---------抓取標題錯誤~---------" + new Random().nextInt(10000000);
-				filePath = newscontent[0] + ".txt";
-				f = new File(dirPath + "/" + filePath);
-				out = new OutputStreamWriter(new FileOutputStream(f.getAbsolutePath()), "UTF-8");
+	private void ImgUrlTransferJson(JSONObject jsonObj, String cnt7) throws JSONException{
+		if(cnt7 != null){
+			JSONArray imgList = new JSONArray();
+			for(String img: cnt7.split("====")){
+				imgList.put(img);
 			}
-
-			System.out.println(date + newscontent[0]);
-
-			out.write(newscontent[0]);
-			out.write("\n");
-			out.write(newscontent[1]);
-			out.close();
+			jsonObj.put("ImgUrl", imgList);
+		}
+		else{
+			jsonObj.put("ImgUrl", "");
+		}
+	}
+	
+	private JSONObject createJsonFile(String[] cnt) throws JSONException, IOException{
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("URL", cnt[0]);
+		jsonObj.put("Date", cnt[1]);
+		jsonObj.put("Source", cnt[2]);
+		jsonObj.put("Category", cnt[3]);
+		jsonObj.put("Title", cnt[4]);
+		jsonObj.put("Text", cnt[5]);
+		jsonObj.put("KeyWord", cnt[6]);
+		ImgUrlTransferJson(jsonObj, cnt[7]);
+		
+//		jsonObj.put("HDFSurl", cnt[8]);
+//		jsonObj.put("SplitText", cnt[9]);
+//		jsonObj.put("Location", cnt[10]);
+//		jsonObj.put("People", cnt[11]);
+//		jsonObj.put("Org", cnt[12]);
+//		jsonObj.put("Event", cnt[13]);
+//		jsonObj.put("Value", cnt[14]);
+		
+		return jsonObj;
+	}
+	
+	private void saveNewsFile(JSONObject jsonObj, String path) throws IOException{
+		 
+		try (FileWriter file = new FileWriter(path)) {
+			file.write(jsonObj.toString());
+			System.out.println("Successfully Copied JSON Object to File...");
 		}
 	}
 
 	public void transferFail(String dirPath, int num, String url) throws IOException {
 		File f = null;
 		OutputStream out = null;
-		System.err.println("轉換失敗");
-		f = new File(dirPath + "/轉換失敗" + num);
+		System.err.println("Tranfer Fail");
+		f = new File(dirPath + "/Tranfer Fail" + num);
 		out = new FileOutputStream(f.getAbsolutePath());
 		out.write(url.getBytes());
 		out.close();
 	}
 
-	public void processNewsList(String newsName) throws IOException {
-
-		String dirPath = null;
+	public void processNewsList(String newsName) throws IOException, JSONException {
 		String tag = null;
 		String url = null;
 		String date = null;
@@ -137,7 +168,7 @@ public class Crawler {
 	}
 
 	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain)
-			throws IOException {
+			throws IOException, JSONException{
 
 	}
 

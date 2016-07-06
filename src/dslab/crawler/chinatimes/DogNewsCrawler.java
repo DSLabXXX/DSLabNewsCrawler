@@ -1,6 +1,6 @@
 package dslab.crawler.chinatimes;
 
-public class DogCrawler extends ChinatimesCrawler{
+public class DogNewsCrawler extends ChinatimesCrawler{
 	
 	@Override
 	public void setUrl(){

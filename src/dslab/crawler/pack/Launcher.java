@@ -3,11 +3,13 @@ package dslab.crawler.pack;
 import java.io.IOException;
 import java.util.Calendar;
 
+import org.json.JSONException;
+
 import dslab.crawler.apple.AppleCrawler;
 import dslab.crawler.chinatimes.BusinessTimesCrawlwe;
 import dslab.crawler.chinatimes.ChinaElectronicsNewsCrawler;
 import dslab.crawler.chinatimes.ChinatimesCrawler;
-import dslab.crawler.chinatimes.DogCrawler;
+import dslab.crawler.chinatimes.DogNewsCrawler;
 import dslab.crawler.ltn.LtnCrawler;
 import dslab.crawler.ptt.PttGossipingCrawler;
 import dslab.crawler.udn.UdnCrawler;
@@ -21,81 +23,81 @@ public class Launcher {
 	public static String today;
 	public static Calendar C;
 	
-	private static void apple(AppleCrawler apple, String[] dateAry) throws IOException{
+	private static void apple(AppleCrawler apple, String[] dateAry) throws IOException, JSONException{
 		apple.pastdayOfYear = dateAry[0];
 		apple.pastdayOfMonth = dateAry[1];
 		apple.pastdayOfdate = dateAry[2];
 		apple.pastday = pastday;
 		apple.today = today;
 		apple.customerRunProcess();
-		apple.processNewsList("./蘋果日報/");
+		apple.processNewsList("/home/dslab_crawler/AppleDaily/");
 	}
 	
-	private static void ltn(LtnCrawler ltn, String[] dateAry) throws IOException{
+	private static void ltn(LtnCrawler ltn, String[] dateAry) throws IOException, JSONException{
 		ltn.pastdayOfYear = dateAry[0];
 		ltn.pastdayOfMonth = dateAry[1];
 		ltn.pastdayOfdate = dateAry[2];
 		ltn.pastday = pastday;
 		ltn.today = today;
 		ltn.customerRunProcess();
-		ltn.processNewsList("./自由時報/");
+		ltn.processNewsList("/home/dslab_crawler/LTN/");
 	}
 	
-	private static void chinatimes(ChinatimesCrawler chinatimes, String[] dateAry) throws IOException{
+	private static void chinatimes(ChinatimesCrawler chinatimes, String[] dateAry) throws IOException, JSONException{
 		chinatimes.pastdayOfYear = dateAry[0];
 		chinatimes.pastdayOfMonth = dateAry[1];
 		chinatimes.pastdayOfdate = dateAry[2];
 		chinatimes.pastday = pastday;
 		chinatimes.today = today;
 		chinatimes.customerRunProcess();
-		chinatimes.processNewsList("./中國時報/");
+		chinatimes.processNewsList("/home/dslab_crawler/ChinaTimes/");
 	}
 	
-	private static void businesstimes(BusinessTimesCrawlwe businesstimes, String[] dateAry) throws IOException{
+	private static void businesstimes(BusinessTimesCrawlwe businesstimes, String[] dateAry) throws IOException, JSONException{
 		businesstimes.pastdayOfYear = dateAry[0];
 		businesstimes.pastdayOfMonth = dateAry[1];
 		businesstimes.pastdayOfdate = dateAry[2];
 		businesstimes.pastday = pastday;
 		businesstimes.today = today;
 		businesstimes.customerRunProcess();
-		businesstimes.processNewsList("./工商時報/");
+		businesstimes.processNewsList("/home/dslab_crawler/BusinessTimes/");
 	}
 	
-	private static void dog(DogCrawler dog, String[] dateAry) throws IOException{
-		dog.pastdayOfYear = dateAry[0];
-		dog.pastdayOfMonth = dateAry[1];
-		dog.pastdayOfdate = dateAry[2];
-		dog.pastday = pastday;
-		dog.today = today;
-		dog.customerRunProcess();
-		dog.processNewsList("./旺報/");
+	private static void dogNews(DogNewsCrawler dogNews, String[] dateAry) throws IOException, JSONException{
+		dogNews.pastdayOfYear = dateAry[0];
+		dogNews.pastdayOfMonth = dateAry[1];
+		dogNews.pastdayOfdate = dateAry[2];
+		dogNews.pastday = pastday;
+		dogNews.today = today;
+		dogNews.customerRunProcess();
+		dogNews.processNewsList("/home/dslab_crawler/DogNews/");
 	}
 	
-	private static void chinaelectrontimes(ChinaElectronicsNewsCrawler chinaelectrontimes, String[] dateAry) throws IOException{
+	private static void chinaelectrontimes(ChinaElectronicsNewsCrawler chinaelectrontimes, String[] dateAry) throws IOException, JSONException{
 		chinaelectrontimes.pastdayOfYear = dateAry[0];
 		chinaelectrontimes.pastdayOfMonth = dateAry[1];
 		chinaelectrontimes.pastdayOfdate = dateAry[2];
 		chinaelectrontimes.pastday = pastday;
 		chinaelectrontimes.today = today;
 		chinaelectrontimes.customerRunProcess();
-		chinaelectrontimes.processNewsList("./中時電子報/");
+		chinaelectrontimes.processNewsList("/home/dslab_crawler/ChinaElectronicsNews/");
 	}
 	
-	private static void udn(UdnCrawler udn, String[] dateAry) throws IOException{
+	private static void udn(UdnCrawler udn, String[] dateAry) throws IOException, JSONException{
 		udn.pastdayOfYear = dateAry[0];
 		udn.pastdayOfMonth = dateAry[1];
 		udn.pastdayOfdate = dateAry[2];
 		udn.pastday = pastday;
 		udn.today = today;
 		udn.customerRunProcess();
-		udn.processNewsList("./聯合報/");
+		udn.processNewsList("/home/dslab_crawler/UDN/");
 	}
 	
 	private static void pttgossiping(Integer startIdx) throws IOException{
 		PttGossipingCrawler ptt = new PttGossipingCrawler();
 		ptt.startIdx = startIdx.toString();
 		ptt.run();
-		ptt.processNewsList("./PttGossiping/");
+		ptt.processNewsList("/home/dslab_crawler/PttGossiping/");
 	}
 
 	private static void dateProcess(String[] args) {
@@ -108,7 +110,7 @@ public class Launcher {
 		C.set(Integer.parseInt(pastdayOfYear), Integer.parseInt(pastdayOfMonth) - 1, Integer.parseInt(pastdayOfdate));
 	}
 	
-	public static void main(String[] args) throws IOException, InterruptedException {
+	public static void main(String[] args) throws IOException, InterruptedException, JSONException {
 		
 //		TcpLink tcp = new TcpLink();
 //		tcp.setMode(TcpLink.DATA_MODE);
@@ -130,7 +132,7 @@ public class Launcher {
 		LtnCrawler ltn = new LtnCrawler();
 		ChinatimesCrawler chinatimes = new ChinatimesCrawler();
 		BusinessTimesCrawlwe businesstimes = new BusinessTimesCrawlwe();
-		DogCrawler dog = new DogCrawler();
+		DogNewsCrawler dog = new DogNewsCrawler();
 		ChinaElectronicsNewsCrawler chinaelectrontimes = new ChinaElectronicsNewsCrawler();
 		UdnCrawler udn = new UdnCrawler();
 		
@@ -148,7 +150,7 @@ public class Launcher {
 			ltn(ltn, dateAry);
 			chinatimes(chinatimes, dateAry);
 			businesstimes(businesstimes, dateAry);
-			dog(dog, dateAry);
+			dogNews(dog, dateAry);
 			chinaelectrontimes(chinaelectrontimes, dateAry);
 			
 			C.add(C.DATE, Integer.parseInt("1"));
@@ -161,9 +163,9 @@ public class Launcher {
 //				e.printStackTrace();
 //			}
 //			pttgossiping(i);
-//			System.out.println("頁數" + i);
+//			System.out.println("Page:" + i);
 //		}
 		
-		System.out.println("抓取完成!!!!!!");
+		System.out.println("Finish!!!!!!");
 	}
 }

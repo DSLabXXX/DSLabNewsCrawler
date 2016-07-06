@@ -41,8 +41,8 @@ public class LtnCrawler extends Crawler{
 			for (String urllink : urlList) {
 				newsLinks = CrawlerPack.start().getFromXml(urllink);
 				for (Element elem : newsLinks.select("ul#newslistul.boxTitle").select("li.lipic")) {
-					newsTag = elem.select("span").text();
-					addNewsLinkList("http://news.ltn.com.tw" + elem.select("a[href]").attr("href"), newsTag, pastday);
+					newsCategory = elem.select("span").text();
+					addNewsLinkList("http://news.ltn.com.tw" + elem.select("a[href]").attr("href"), newsCategory, pastday);
 				}
 			}
 		}	    	

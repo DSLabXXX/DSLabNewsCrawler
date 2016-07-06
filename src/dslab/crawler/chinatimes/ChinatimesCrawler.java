@@ -2,6 +2,8 @@ package dslab.crawler.chinatimes;
 
 
 import java.io.IOException;
+
+import org.json.JSONException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -11,9 +13,9 @@ import dslab.crawler.pack.CrawlerPack;
 public class ChinatimesCrawler extends Crawler {
 	
 	@Override
-	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException{
+	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException, JSONException{
 		
-		processNewsContain(commentNewsParseProcess(contain), date, dirPath);
+		processNewsContain(commentNewsParseProcess(contain));
 	}
 	
 	@Override
@@ -32,8 +34,8 @@ public class ChinatimesCrawler extends Crawler {
     		currentPage = url + "?page=" + i.toString();
     		newsLinks = CrawlerPack.start().getFromXml(currentPage);
 			for (Element elem : newsLinks.select("section.np_alllist").select("div.listRight").select("li")) {
-				newsTag = elem.select("div.kindOf").text();
-				addNewsLinkList("http://www.chinatimes.com" + elem.select("a[href]").attr("href"), newsTag, pastday);
+				newsCategory = elem.select("div.kindOf").text();
+				addNewsLinkList("http://www.chinatimes.com" + elem.select("a[href]").attr("href"), newsCategory, pastday);
 			}
     	}
 	}	
