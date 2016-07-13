@@ -93,7 +93,7 @@ public class Launcher {
 		udn.processNewsList("/home/dslab_crawler/UDN/");
 	}
 	
-	private static void pttgossiping(Integer startIdx) throws IOException{
+	private static void pttgossiping(Integer startIdx) throws IOException, JSONException{
 		PttGossipingCrawler ptt = new PttGossipingCrawler();
 		ptt.startIdx = startIdx.toString();
 		ptt.run();
@@ -128,43 +128,43 @@ public class Launcher {
 //		tcp.destroy();
 		
 		
-		AppleCrawler apple = new AppleCrawler();
-		LtnCrawler ltn = new LtnCrawler();
-		ChinatimesCrawler chinatimes = new ChinatimesCrawler();
-		BusinessTimesCrawlwe businesstimes = new BusinessTimesCrawlwe();
-		DogNewsCrawler dog = new DogNewsCrawler();
-		ChinaElectronicsNewsCrawler chinaelectrontimes = new ChinaElectronicsNewsCrawler();
-		UdnCrawler udn = new UdnCrawler();
-		
-		String[] dateAry = new String[4];
-		dateProcess(args);
-		
-		while (Integer.parseInt(pastday) < Integer.parseInt(today)) {
-			dateAry[0] = String.format("%04d", C.get(Calendar.YEAR));
-			dateAry[1] = String.format("%02d", C.get(Calendar.MONTH) + 1);
-			dateAry[2] = String.format("%02d", C.get(Calendar.DAY_OF_MONTH));
-			pastday = dateAry[0] + dateAry[1] + dateAry[2];
-			
-			apple(apple, dateAry);
-//			udn(udn, dateAry, tcp);
-			ltn(ltn, dateAry);
-			chinatimes(chinatimes, dateAry);
-			businesstimes(businesstimes, dateAry);
-			dogNews(dog, dateAry);
-			chinaelectrontimes(chinaelectrontimes, dateAry);
-			
-			C.add(C.DATE, Integer.parseInt("1"));
-		}
-		
-//		for(Integer i = Integer.parseInt(args[0]); i <= Integer.parseInt(args[1]); i++){
-//			try {
-//				Thread.sleep(500);
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//			pttgossiping(i);
-//			System.out.println("Page:" + i);
+//		AppleCrawler apple = new AppleCrawler();
+//		LtnCrawler ltn = new LtnCrawler();
+//		ChinatimesCrawler chinatimes = new ChinatimesCrawler();
+//		BusinessTimesCrawlwe businesstimes = new BusinessTimesCrawlwe();
+//		DogNewsCrawler dog = new DogNewsCrawler();
+//		ChinaElectronicsNewsCrawler chinaelectrontimes = new ChinaElectronicsNewsCrawler();
+////		UdnCrawler udn = new UdnCrawler();
+//		
+//		String[] dateAry = new String[4];
+//		dateProcess(args);
+//		
+//		while (Integer.parseInt(pastday) < Integer.parseInt(today)) {
+//			dateAry[0] = String.format("%04d", C.get(Calendar.YEAR));
+//			dateAry[1] = String.format("%02d", C.get(Calendar.MONTH) + 1);
+//			dateAry[2] = String.format("%02d", C.get(Calendar.DAY_OF_MONTH));
+//			pastday = dateAry[0] + dateAry[1] + dateAry[2];
+//			
+//			apple(apple, dateAry);
+////			udn(udn, dateAry, tcp);
+//			ltn(ltn, dateAry);
+//			chinatimes(chinatimes, dateAry);
+//			businesstimes(businesstimes, dateAry);
+//			dogNews(dog, dateAry);
+//			chinaelectrontimes(chinaelectrontimes, dateAry);
+//			
+//			C.add(C.DATE, Integer.parseInt("1"));
 //		}
+		
+		for(Integer i = Integer.parseInt(args[0]); i <= Integer.parseInt(args[1]); i++){
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			pttgossiping(i);
+			System.out.println("Page:" + i);
+		}
 		
 		System.out.println("Finish!!!!!!");
 	}

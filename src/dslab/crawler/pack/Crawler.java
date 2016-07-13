@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -54,11 +53,6 @@ public class Crawler {
 		newsLinkList = new ArrayList<String>();
 		newsTagLinkList = new ArrayList<String[]>();
 	}
-
-//	public void processNewsContain(String[] newscontent, String date, String dirPath) throws IOException {
-//		saveNewsToFile(newscontent, date, dirPath);
-//		sentNewsToStream(newscontent);
-//	}
 	
 	public void processNewsContain(String[] newscontent) throws IOException, JSONException {
 		String filePath =  newscontent[1] + newscontent[4];
@@ -68,10 +62,10 @@ public class Crawler {
 		} else {
 			filePath.replaceAll("[\\\\/:*?\"<>| ]", "-");
 			try {
-				saveNewsFile(createJsonFile(newscontent), dirPath + "/" + filePath);
+				saveNewsFile(createJsonFile(newscontent), dirPath + "/" + filePath.replace("/", "-"));
 			} catch (IOException e) {
 				filePath = newscontent[1] + "---------Get Title Error---------" + new Random().nextInt(10000000) + ".txt";
-				saveNewsFile(createJsonFile(newscontent), dirPath + "/" + filePath);
+				saveNewsFile(createJsonFile(newscontent), dirPath + "/" + filePath.replace("/", "-"));
 				e.printStackTrace();
 			}
 		}
@@ -90,7 +84,30 @@ public class Crawler {
 		}
 	}
 	
-	private JSONObject createJsonFile(String[] cnt) throws JSONException, IOException{
+	private void PushTransferJson(JSONObject jsonObj, String cnt17) throws JSONException{
+		JSONArray pushList = new JSONArray();
+		if(cnt17 != null){
+			String tmp = "";
+			for(String p: cnt17.split("\n")){
+				JSONObject pushObj = new JSONObject();
+				if (p.split("hl push-taghl push-taghl push-tag").length < 2)
+					break;
+				pushObj.put("pushTag", p.split("hl push-taghl push-taghl push-tag")[0]);
+				tmp = p.split("hl push-taghl push-taghl push-tag")[1];
+				pushObj.put("userId", tmp.split("f3 hl push-useridf3 hl push-useridf3 hl push-userid")[0]);
+				tmp = tmp.split("f3 hl push-useridf3 hl push-useridf3 hl push-userid")[1];
+				pushObj.put("pushContent", tmp.split("f3 push-contentf3 push-contentf3 push-content")[0]);
+				pushObj.put("ipDatetime", tmp.split("f3 push-contentf3 push-contentf3 push-content")[1]);
+				pushList.put(pushObj);
+			}
+			jsonObj.put("Push", pushList);
+		}
+		else{
+			jsonObj.put("Push", "");
+		}
+	}
+	
+	protected JSONObject createJsonFile(String[] cnt) throws JSONException, IOException{
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("URL", cnt[0]);
 		jsonObj.put("Date", cnt[1]);
@@ -100,23 +117,28 @@ public class Crawler {
 		jsonObj.put("Text", cnt[5]);
 		jsonObj.put("KeyWord", cnt[6]);
 		ImgUrlTransferJson(jsonObj, cnt[7]);
-		
-//		jsonObj.put("HDFSurl", cnt[8]);
-//		jsonObj.put("SplitText", cnt[9]);
-//		jsonObj.put("Location", cnt[10]);
-//		jsonObj.put("People", cnt[11]);
-//		jsonObj.put("Org", cnt[12]);
-//		jsonObj.put("Event", cnt[13]);
-//		jsonObj.put("Value", cnt[14]);
+		jsonObj.put("HDFSurl", cnt[8]);
+		jsonObj.put("SplitText", cnt[9]);
+		jsonObj.put("Location", cnt[10]);
+		jsonObj.put("People", cnt[11]);
+		jsonObj.put("Org", cnt[12]);
+		jsonObj.put("Event", cnt[13]);
+		jsonObj.put("Value", cnt[14]);
+		jsonObj.put("Author", cnt[15]);
+		jsonObj.put("AuthorIp", cnt[16]);
+		PushTransferJson(jsonObj, cnt[17]);
+		jsonObj.put("LinkUrl", cnt[18]);
 		
 		return jsonObj;
 	}
 	
-	private void saveNewsFile(JSONObject jsonObj, String path) throws IOException{
+	protected void saveNewsFile(JSONObject jsonObj, String path){
 		 
 		try (FileWriter file = new FileWriter(path)) {
 			file.write(jsonObj.toString());
-			System.out.println("Successfully Copied JSON Object to File...");
+			System.out.println("Successfully copied JSON object to file: " + path);
+		} catch (IOException e) {
+			System.err.println("Fail to save JSON file: " + path);
 		}
 	}
 
@@ -131,18 +153,18 @@ public class Crawler {
 	}
 
 	public void processNewsList(String newsName) throws IOException, JSONException {
-		String tag = null;
+		String category = null;
 		String url = null;
 		String date = null;
 		File dir;
 
 		for (int i = 0; i < newsTagLinkList.size(); i++) {
 
-			tag = newsTagLinkList.get(i)[0];
+			category = newsTagLinkList.get(i)[0];
 			url = newsTagLinkList.get(i)[1].toString();
 			date = newsTagLinkList.get(i)[2].toString();
 
-			dirPath = newsName + tag;
+			dirPath = newsName + category;
 			dir = new File(dirPath);
 			dir.mkdirs();
 
@@ -150,7 +172,7 @@ public class Crawler {
 
 			for (int j = 0; j < 5; j++) {
 				if (contain != null) {
-					customerProcessNewsList(tag, url, date, dirPath, contain);
+					customerProcessNewsList(category, url, date, dirPath, contain);
 					break;
 				}
 				else if (j == 4){

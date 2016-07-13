@@ -1,11 +1,10 @@
 package dslab.crawler.ptt;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Random;
 
+import org.json.JSONException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
@@ -14,35 +13,37 @@ import dslab.crawler.pack.CrawlerPack;
 import dslab.crawler.pack.XTrustProvider;
 
 public class PttGossipingCrawler extends Crawler{
+	String l_date;
+	String l_url;
+	String l_dirPath;
+	String l_source;
 	
 	@Override
-	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException{
-		processNewsContain(commentNewsParseProcess(contain), date, dirPath);
+	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException, JSONException{
+		l_url = url;
+		l_date = date;
+		l_dirPath = dirPath;
+		
+		processNewsContain(commentNewsParseProcess(contain));
 	}
 	
 	@Override
-	public void processNewsContain(String[] newscontent, String date, String dirPath) throws IOException {
+	public void processNewsContain(String[] newscontent) throws IOException, JSONException {
 
-		File f = null;
-		String filePath = null;
-		OutputStream out = null;
-		
-		if(newscontent[1].equals("")){
-			newscontent[1] = "---------無法抓取標題---------" + new Random().nextInt(10000000);
-			filePath = newscontent[1] + ".txt";
-		}
-		else{
-			filePath = newscontent[2] + "_" + newscontent[1] + "_" + newscontent[0] + ".txt";
-			f = new File(dirPath + "/" + filePath.replaceAll("[\\\\/:*?\"<>| ]", "-"));
-			out = new FileOutputStream(f.getAbsolutePath());
-
-			for (int i = 0; i < newscontent.length; i++) {
-				out.write(newscontent[i].getBytes());
-				out.write("\n".getBytes());
+		String filePath =  newscontent[1] + "_" + newscontent[4] + "_" + newscontent[15];
+		if (newscontent[4].equals("")) {
+			filePath =  newscontent[1] + "---------No title---------" + new Random().nextInt(10000000) + ".txt";
+			saveNewsFile(createJsonFile(newscontent), l_dirPath + filePath);
+		} else {
+			filePath.replaceAll("[\\\\/:*?\"<>| ]", "-");
+			try {
+				saveNewsFile(createJsonFile(newscontent), l_dirPath + filePath.replace("/", "-"));
+			} catch (IOException e) {
+				filePath = newscontent[1] + "---------Get Title Error---------" + newscontent[15] + new Random().nextInt(10000000) + ".txt";
+				saveNewsFile(createJsonFile(newscontent), l_dirPath + filePath.replace("/", "-"));
+				e.printStackTrace();
 			}
-			out.close();
 		}
-		System.out.println(filePath);
 	}
 	
 	public void run(){
@@ -57,7 +58,7 @@ public class PttGossipingCrawler extends Crawler{
 	}
 	
 	@Override
-	public void processNewsList(String newsName) throws IOException {
+	public void processNewsList(String newsName) throws IOException, JSONException {
 
 		String dirPath = null;
 		String url = null;
@@ -93,51 +94,67 @@ public class PttGossipingCrawler extends Crawler{
 		}
 	}
 	
+	private String[] loadInfo(){
+		String[] newscont = new String[20];
+		newscont[0] = l_url;
+		newscont[1] = l_date;
+		newscont[2] = "PttGossiping";
+		for(int i = 4; i < newscont.length; i++)
+			newscont[i] = "";
+		return newscont;
+	}
+	
 	private String[] commentNewsParseProcess(Document contain){
-		String[] newscontent = {"","","","","",""};
+		String[] newscontent = loadInfo();
 		String[] tmp;
 		
 		for (Element elem : contain.select("div#main-container").select("div#main-content.bbs-screen.bbs-content")) {
 			for(Element elem2 : elem.select("div.article-metaline").select("span.article-meta-tag")){
 				if(elem2.text().equals("作者"))
-					newscontent[0] = elem2.parent().select("span.article-meta-value").text();
+					newscontent[15] = elem2.parent().select("span.article-meta-value").text();
 				else if(elem2.text().equals("標題"))
-					newscontent[1] = elem2.parent().select("span.article-meta-value").text();
+					newscontent[4] = elem2.parent().select("span.article-meta-value").text();
 				else if(elem2.text().equals("時間")){
-					newscontent[2] = dateProcess(elem2.parent().select("span.article-meta-value").text());
+					newscontent[1] = dateProcess(elem2.parent().select("span.article-meta-value").text());
 				}
 			}
 			try {
-				newscontent[3] = elem.ownText().split("來自: ")[1];
+				newscontent[16] += elem.ownText().split("來自: ")[1];
 			} catch (Exception e) {
 //				e.printStackTrace();
 				try {
 					tmp = elem.html().split("</div>")[4].split("<span class=\"f2\">");
-					newscontent[3] = tmp[tmp.length - 1].split(": ")[2].split("<div")[0].split("</span>")[0];
+					newscontent[16] += tmp[tmp.length - 1].split(": ")[2].split("<div")[0].split("</span>")[0];
 				} catch (Exception e1) {
 //					e1.printStackTrace();
 					try {
-						newscontent[3] = elem.ownText().split("◆ From: ")[1];						
+						newscontent[16] += elem.ownText().split("◆ From: ")[1];						
 					} catch (Exception e2) {
-						newscontent[3] = "無法截取IP";
+						newscontent[16] += "無法截取IP";
 					}
 				}
 			}
 			
 			try {
-				newscontent[4] = elem.html().split("</div>")[4].split("<div")[0] + "\n";
+				newscontent[5] += elem.html().split("</div>")[4].split("<div")[0] + "\n";
 			} catch (Exception e) {
-				newscontent[4] = "";
+				newscontent[5] += "";
 			}
 			
 			for(Element elem2 : elem.select("div.push")){
 				for(Element elem3 : elem2.select("span")){
-					if(elem3.className().equals("push-ipdatetime"))
-						newscontent[5] += "\n" + elem3.text();
-					else
-						newscontent[5] += elem3.text() + " ";
+					if(elem3.className().equals("f1 hl push-tag"))
+						newscontent[17] += elem3.text() + "hl push-taghl push-taghl push-tag";
+					else if(elem3.className().equals("hl push-tag"))
+						newscontent[17] += elem3.text() + "hl push-taghl push-taghl push-tag";
+					else if (elem3.className().equals("f3 hl push-userid"))
+						newscontent[17] += elem3.text() + "f3 hl push-useridf3 hl push-useridf3 hl push-userid";
+					else if (elem3.className().equals("f3 push-content"))
+						newscontent[17] += elem3.text() + "f3 push-contentf3 push-contentf3 push-content";
+					else if (elem3.className().equals("push-ipdatetime"))
+						newscontent[17] += elem3.text();
 				}
-				newscontent[5] += "\n";
+				newscontent[17] += "\n";
 			}
 		}
 		

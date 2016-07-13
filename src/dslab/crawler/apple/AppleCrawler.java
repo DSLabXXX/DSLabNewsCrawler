@@ -1,8 +1,6 @@
 package dslab.crawler.apple;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
 import org.json.JSONException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -48,12 +46,13 @@ public class AppleCrawler extends Crawler{
 	}
 	
 	private String[] loadInfo(){
-		String[] newscont = new String[15];
+		String[] newscont = new String[20];
 		newscont[0] = l_url;
 		newscont[1] = l_date;
 		newscont[2] = "AppleDaily";
 		newscont[3] = l_category;
-		newscont[7] = "";
+		for(int i = 4; i < newscont.length; i++)
+			newscont[i] = "";
 		return newscont;
 	}
 	
@@ -63,8 +62,10 @@ public class AppleCrawler extends Crawler{
 			newscontent[4] = elem.select("header").select("hgroup").text();
 			newscontent[5] = elem.select("p").text();
 		}
-		for(Element elem : contain.select("div.articulum").select("figure")){
-			newscontent[7] += elem.select("a").attr("title")+ "::::" + elem.select("a").attr("href").replace("=", "%3D") + "====";
+		for(Element elem : contain.select("div.articulum").select("figure").select("a")){
+			if(!elem.attr("title").equals("") || !elem.attr("href").equals("")){
+				newscontent[7] += elem.attr("title") + "::::" + elem.attr("href").replace("=", "%3D") + "====";
+			}
 		}		
 		return newscontent;
 	}
@@ -77,8 +78,10 @@ public class AppleCrawler extends Crawler{
 			newscontent[5] += elem.select("div.articulum").select("p").text();
 		}
 		
-		for(Element elem : contain.select("div.ncbox_cont").select("div.articulum").select("figure.lbimg.sgimg")){
-			newscontent[7] += elem.select("a").attr("title")+ "::::" + elem.select("a").attr("href").replace("=", "%3D") + "====";
+		for(Element elem : contain.select("div.ncbox_cont").select("div.articulum").select("figure.lbimg.sgimg").select("a")){
+			if(!elem.attr("title").equals("") || !elem.attr("href").equals("")){
+				newscontent[7] += elem.attr("title") + "::::" + elem.attr("href").replace("=", "%3D") + "====";
+			}
 		}
 		return newscontent;
 	}
@@ -91,8 +94,10 @@ public class AppleCrawler extends Crawler{
 			newscontent[5] = elem.select("p").text();
 		}
 		
-		for(Element elem : contain.select("div.ncbox_cont").select("div.articulum").select("figure.lbimg.sgimg")){
-			newscontent[7] += elem.select("a").attr("title")+ "::::" + elem.select("a").attr("href").replace("=", "%3D") + "====";
+		for(Element elem : contain.select("div.ncbox_cont").select("div.articulum").select("figure.lbimg.sgimg").select("a")){
+			if(!elem.attr("title").equals("") || !elem.attr("href").equals("")){
+				newscontent[7] += elem.attr("title") + "::::" + elem.attr("href").replace("=", "%3D") + "====";
+			}
 		}		
 		return newscontent;
 	}

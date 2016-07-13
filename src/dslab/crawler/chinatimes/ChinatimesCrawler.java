@@ -11,10 +11,18 @@ import dslab.crawler.pack.Crawler;
 import dslab.crawler.pack.CrawlerPack;
 
 public class ChinatimesCrawler extends Crawler {
+	String l_date;
+	String l_url;
+	String l_dirPath;
+	String l_category;
+	String l_source;
 	
 	@Override
-	public void customerProcessNewsList(String tag, String url, String date, String dirPath, Document contain) throws IOException, JSONException{
-		
+	public void customerProcessNewsList(String category, String url, String date, String dirPath, Document contain) throws IOException, JSONException{
+		l_category = category;
+		l_url = url;
+		l_date = date;
+		l_dirPath = dirPath;
 		processNewsContain(commentNewsParseProcess(contain));
 	}
 	
@@ -42,14 +50,36 @@ public class ChinatimesCrawler extends Crawler {
 	
 	public void setUrl(){
 		url = "http://www.chinatimes.com/history-by-date/" + pastdayOfYear + "-" + pastdayOfMonth + "-" + pastdayOfdate + "-2601";
+		setSource("ChinaTimes");
+	}
+	
+	private String[] loadInfo(){
+		String[] newscont = new String[20];
+		newscont[0] = l_url;
+		newscont[1] = l_date;
+		newscont[2] = l_source;
+		newscont[3] = l_category;
+		for(int i = 4; i < newscont.length; i++)
+			newscont[i] = "";
+		return newscont;
+	}
+	
+	public void setSource(String source){
+		l_source = source;
 	}
 	
 	private String[] commentNewsParseProcess(Document contain){
-		String[] newscontent = {"",""};
+		String[] newscontent = loadInfo();
 		setSelectElement();
+		
 		for (Element elem : contain.select(elemString)) {
-			newscontent[0] = elem.select("header").select("h1").text();
-			newscontent[1] = elem.select("article.clear-fix").select("p").text();
+			newscontent[4] = elem.select("header").select("h1").text();
+			newscontent[5] = elem.select("article.clear-fix").select("p").text();
+		}
+		for(Element elem : contain.select(elemString).select("article.clear-fix").select("div.img_view").select("img")){
+			if(!elem.attr("title").equals("") || !elem.attr("src").equals("")){
+				newscontent[7] += elem.attr("title") + "::::" + elem.attr("src").replace("=", "%3D") + "====";
+			}
 		}
 		return newscontent;
 	}
