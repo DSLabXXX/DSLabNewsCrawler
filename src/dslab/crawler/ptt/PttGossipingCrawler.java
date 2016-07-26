@@ -156,8 +156,8 @@ public class PttGossipingCrawler extends Crawler{
 				}
 				newscontent[17] += "\n";
 			}
+			newscontent[18] += elem.select("a").attr("href").replace("=", "%3D") + "====";
 		}
-		
 		return newscontent;
 	}
 	

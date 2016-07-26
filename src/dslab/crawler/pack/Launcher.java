@@ -1,10 +1,16 @@
 package dslab.crawler.pack;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import org.json.JSONException;
 
+import csist.c4isr.common.net.TcpLink;
 import dslab.crawler.apple.AppleCrawler;
 import dslab.crawler.chinatimes.BusinessTimesCrawlwe;
 import dslab.crawler.chinatimes.ChinaElectronicsNewsCrawler;
@@ -112,22 +118,29 @@ public class Launcher {
 	
 	public static void main(String[] args) throws IOException, InterruptedException, JSONException {
 		
-//		TcpLink tcp = new TcpLink();
-//		tcp.setMode(TcpLink.DATA_MODE);
-//		tcp.setHost("192.168.4.213");
-//		tcp.setPort(9999);
-//		tcp.connect();
-//		tcp.start();
+		TcpLink tcp = new TcpLink();
+		tcp.setMode(TcpLink.DATA_MODE);
+		tcp.setHost("192.168.4.213");
+		tcp.setPort(9999);
+		tcp.connect();
+		tcp.start();
+		ScanFile scanFileServer = new ScanFile();
+		List<String> filePathList = scanFileServer.scan(new String[]{"/home/dslab_crawler"});
+		
+		FileReader fr;
+		BufferedReader br;
+		String news_contain = "";
+		for(String fs: filePathList){
+			fr = new FileReader(fs);
+			br = new BufferedReader(fr);
+			news_contain = br.readLine();
+			tcp.writeBytes((news_contain + "\n").getBytes());
+			Thread.sleep(500);
+			System.out.println(fs);
+		}
+		tcp.destroy();
+		
 //		
-//		int i = 0;
-//		while(true){
-//			tcp.writeBytes(("string\n").getBytes());
-//			System.err.println("string" + i++);
-//			Thread.sleep(500);
-//		}
-//		tcp.destroy();
-		
-		
 //		AppleCrawler apple = new AppleCrawler();
 //		LtnCrawler ltn = new LtnCrawler();
 //		ChinatimesCrawler chinatimes = new ChinatimesCrawler();
@@ -156,15 +169,15 @@ public class Launcher {
 //			C.add(C.DATE, Integer.parseInt("1"));
 //		}
 		
-		for(Integer i = Integer.parseInt(args[0]); i <= Integer.parseInt(args[1]); i++){
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			pttgossiping(i);
-			System.out.println("Page:" + i);
-		}
+//		for(Integer i = Integer.parseInt(args[0]); i <= Integer.parseInt(args[1]); i++){
+//			try {
+//				Thread.sleep(500);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			pttgossiping(i);
+//			System.out.println("Page:" + i);
+//		}
 		
 		System.out.println("Finish!!!!!!");
 	}

@@ -84,6 +84,19 @@ public class Crawler {
 		}
 	}
 	
+	private void LinkUrlTransferJson(JSONObject jsonObj, String cnt18) throws JSONException{
+		if(cnt18 != null){
+			JSONArray linkList = new JSONArray();
+			for(String img: cnt18.split("====")){
+				linkList.put(img);
+			}
+			jsonObj.put("LinkUrl", linkList);
+		}
+		else{
+			jsonObj.put("LinkUrl", "");
+		}
+	}
+	
 	private void PushTransferJson(JSONObject jsonObj, String cnt17) throws JSONException{
 		JSONArray pushList = new JSONArray();
 		if(cnt17 != null){
@@ -127,7 +140,7 @@ public class Crawler {
 		jsonObj.put("Author", cnt[15]);
 		jsonObj.put("AuthorIp", cnt[16]);
 		PushTransferJson(jsonObj, cnt[17]);
-		jsonObj.put("LinkUrl", cnt[18]);
+		LinkUrlTransferJson(jsonObj, cnt[18]);
 		
 		return jsonObj;
 	}
