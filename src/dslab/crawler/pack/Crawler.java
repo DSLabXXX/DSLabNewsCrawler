@@ -28,6 +28,7 @@ public class Crawler {
 	public String newsCategory;
 	public String elemString;
 	public String dirPath;
+	private int errTitleCnt;
 	public Document newsLinks;
 
 	public void addNewsLinkList(String url, String newsTag, String pastday) {
@@ -54,18 +55,24 @@ public class Crawler {
 		newsTagLinkList = new ArrayList<String[]>();
 	}
 	
+	public void clearErrTitleCnt(){
+		errTitleCnt = 0;
+	}
+	
 	public void processNewsContain(String[] newscontent) throws IOException, JSONException {
-		String filePath =  newscontent[1] + newscontent[4];
+		String fileName =  newscontent[1] + newscontent[4];
 		if (newscontent[4].equals("")) {
-			filePath =  newscontent[1] + "---------No title---------" + new Random().nextInt(10000000) + ".txt";
-			saveNewsFile(createJsonFile(newscontent), dirPath + "/" + filePath);
+			errTitleCnt += 1;
+			fileName =  newscontent[1] + "---------No title---------" + errTitleCnt + ".txt";
+			newscontent[4] = fileName;
+			saveNewsFile(createJsonFile(newscontent), dirPath + "/" + fileName);
 		} else {
-			filePath.replaceAll("[\\\\/:*?\"<>| ]", "-");
+			fileName.replaceAll("[\\\\/:*?\"<>| ]", "-");
 			try {
-				saveNewsFile(createJsonFile(newscontent), dirPath + "/" + filePath.replace("/", "-"));
+				saveNewsFile(createJsonFile(newscontent), dirPath + "/" + fileName.replace("/", "-"));
 			} catch (IOException e) {
-				filePath = newscontent[1] + "---------Get Title Error---------" + new Random().nextInt(10000000) + ".txt";
-				saveNewsFile(createJsonFile(newscontent), dirPath + "/" + filePath.replace("/", "-"));
+				fileName = newscontent[1] + "---------Get Title Error---------" + new Random().nextInt(10000000) + ".txt";
+				saveNewsFile(createJsonFile(newscontent), dirPath + "/" + fileName.replace("/", "-"));
 				e.printStackTrace();
 			}
 		}

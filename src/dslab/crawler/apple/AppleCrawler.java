@@ -31,6 +31,7 @@ public class AppleCrawler extends Crawler{
 		
 	@Override
 	public void customerRunProcess(){
+		clearErrTitleCnt();
 		url = "http://www.appledaily.com.tw/appledaily/archive/" + pastday;
     	newsLinks = CrawlerPack.start().getFromHtml(url);
 

@@ -106,7 +106,7 @@ public class Launcher {
 		ptt.processNewsList("/home/dslab_crawler/PttGossiping/");
 	}
 
-	private static void dateProcess(String[] args) {
+	private static void datePreprocess(String[] args) {
 		pastdayOfYear = args[0];
 		pastdayOfMonth = args[1];
 		pastdayOfdate = args[2];
@@ -140,7 +140,7 @@ public class Launcher {
 		}
 		tcp.destroy();
 		
-//		
+		
 //		AppleCrawler apple = new AppleCrawler();
 //		LtnCrawler ltn = new LtnCrawler();
 //		ChinatimesCrawler chinatimes = new ChinatimesCrawler();
@@ -150,7 +150,7 @@ public class Launcher {
 ////		UdnCrawler udn = new UdnCrawler();
 //		
 //		String[] dateAry = new String[4];
-//		dateProcess(args);
+//		datePreprocess(args);
 //		
 //		while (Integer.parseInt(pastday) < Integer.parseInt(today)) {
 //			dateAry[0] = String.format("%04d", C.get(Calendar.YEAR));
@@ -158,7 +158,7 @@ public class Launcher {
 //			dateAry[2] = String.format("%02d", C.get(Calendar.DAY_OF_MONTH));
 //			pastday = dateAry[0] + dateAry[1] + dateAry[2];
 //			
-//			apple(apple, dateAry);
+//			apple(apple, dateAry);	
 ////			udn(udn, dateAry, tcp);
 //			ltn(ltn, dateAry);
 //			chinatimes(chinatimes, dateAry);

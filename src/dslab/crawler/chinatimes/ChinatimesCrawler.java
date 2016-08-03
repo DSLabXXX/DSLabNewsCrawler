@@ -28,6 +28,7 @@ public class ChinatimesCrawler extends Crawler {
 	
 	@Override
 	public void customerRunProcess(){
+		clearErrTitleCnt();
 		int page = 0;
 		String currentPage;
 		

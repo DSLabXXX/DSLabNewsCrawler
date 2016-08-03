@@ -37,6 +37,7 @@ public class LtnCrawler extends Crawler{
 	
 	@Override
 	public void customerRunProcess(){
+		clearErrTitleCnt();
 		String[] subCategory = {"focus", "politics", "society", "local", "life", "opinion", "world", "business", "sports", "entertainment", "consumer", "supplement"};
 		ArrayList<String> urlList = new ArrayList<String>();
 		

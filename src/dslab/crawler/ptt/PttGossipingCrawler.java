@@ -55,6 +55,7 @@ public class PttGossipingCrawler extends Crawler{
 		for (Element elem : newsLinks.select("div.r-ent")) {
 			addNewsLinkList("https://www.ptt.cc" + elem.select("a[href]").attr("href"));
 		}
+		clearErrTitleCnt();
 	}
 	
 	@Override
